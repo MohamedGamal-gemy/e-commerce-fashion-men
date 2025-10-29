@@ -6,20 +6,31 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
 import { ProductImages } from "./ProductImages";
 import { ProductInfo } from "./ProductInfo";
 import { ProductVariants } from "./ProductVariants";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"; // ✅ من shadcn
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
+import type { Product, Variant } from "@/types/product"; // ✅ reuse your types
 
-async function getProductDetails(id: string) {
+// --- Fetch helper ---
+async function getProductDetails(id: string): Promise<{ product: Product }> {
   const res = await fetch(`http://localhost:9000/api/products/admin/${id}`);
   if (!res.ok) throw new Error("Failed to fetch product details");
   return res.json();
+}
+
+// --- Component ---
+interface ProductDetailsDialogProps {
+  open: boolean;
+  onClose: () => void;
+  id: string;
+  mode?: "admin" | "user";
 }
 
 export function ProductDetailsDialog({
@@ -27,20 +38,16 @@ export function ProductDetailsDialog({
   onClose,
   id,
   mode,
-}: {
-  open: boolean;
-  onClose: () => void;
-  id: string;
-  mode?: "admin" | "user";
-}) {
-  const { data, isLoading, error } = useQuery({
+}: ProductDetailsDialogProps) {
+  const { data, isLoading, error } = useQuery<{ product: Product }>({
     queryKey: ["admin-product-details", id],
     queryFn: () => getProductDetails(id),
     enabled: open,
   });
 
   const details = data?.product;
-  const [selectedVariant, setSelectedVariant] = useState<any | null>(null);
+
+  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null); // ✅ no any
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
@@ -49,18 +56,15 @@ export function ProductDetailsDialog({
       const first = details.variants[0];
       setSelectedVariant(first);
       setMainImage(first.images?.[0]?.url || "/placeholder.png");
-      setSelectedSize(first.sizes[0].size);
+      setSelectedSize(first.sizes[0]?.size ?? null);
     }
   }, [details]);
 
   if (!details) return null;
+console.log("details",details);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      {/* <DialogContent
-        className="max-w-5xl h-[90vh] bg-slate-950 border
-       border-slate-800 text-slate-200 overflow-hidden"
-      > */}
       <DialogContent className="bg-slate-900 text-slate-100 border border-slate-800 rounded-xl shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-slate-100 text-xl font-semibold">
@@ -100,9 +104,9 @@ export function ProductDetailsDialog({
                   setSelectedSize(null);
                 }}
               />
+
               {mode === "user" && (
                 <Button
-                  // onClick={onClick}
                   className="mt-6 w-full bg-sky-600 hover:bg-sky-500 text-white font-medium
                 transition-all duration-200 flex items-center justify-center gap-2
                 rounded-xl shadow-sm shadow-sky-800/30"

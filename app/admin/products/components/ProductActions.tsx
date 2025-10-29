@@ -10,19 +10,17 @@ import {
 } from "@/components/ui/dialog";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { useDeleteResource } from "../hooks/useDeleteResource";
+import type { ProductAdmin } from "@/types/productsAdmin";
 
-export function ProductActions({
-  row,
-  onOpenDetails,
-  onEdit,
-}: {
-  row: any;
+interface ProductActionsProps {
+  row: ProductAdmin;
   onOpenDetails: () => void;
   onEdit: () => void;
-}) {
+}
+
+export function ProductActions({ row, onOpenDetails, onEdit }: ProductActionsProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  // ✅ استخدم الهـوك العام
   const { mutate: handleDelete, isPending } = useDeleteResource(
     "admin-products",
     "products/admin"
@@ -30,39 +28,39 @@ export function ProductActions({
 
   return (
     <>
-        <div className="flex items-center justify-center  ">
-          {/* 👁️ عرض التفاصيل */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-slate-400 hover:text-sky-400 hover:bg-slate-800/60"
-            onClick={onOpenDetails}
-          >
-            <Eye className="w-4 h-4" />
-          </Button>
+      <div className="flex items-center justify-center">
+        {/* 👁️ View Details */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-slate-400 hover:text-sky-400 hover:bg-slate-800/60"
+          onClick={onOpenDetails}
+        >
+          <Eye className="w-4 h-4" />
+        </Button>
 
-          {/* ✏️ تعديل */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-slate-400 hover:text-yellow-400 hover:bg-slate-800/60"
-            onClick={onEdit}
-          >
-            <Edit className="w-4 h-4" />
-          </Button>
+        {/* ✏️ Edit */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-slate-400 hover:text-yellow-400 hover:bg-slate-800/60"
+          onClick={onEdit}
+        >
+          <Edit className="w-4 h-4" />
+        </Button>
 
-          {/* 🗑️ حذف */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-slate-400 hover:text-red-500 hover:bg-slate-800/60"
-            onClick={() => setConfirmOpen(true)}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        </div>
+        {/* 🗑️ Delete */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-slate-400 hover:text-red-500 hover:bg-slate-800/60"
+          onClick={() => setConfirmOpen(true)}
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
 
-      {/* ⚠️ Dialog التأكيد */}
+      {/* ⚠️ Confirm Delete Dialog */}
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent className="bg-slate-950 border border-slate-800 text-slate-200">
           <DialogHeader>

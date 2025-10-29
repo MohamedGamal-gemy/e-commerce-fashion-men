@@ -1,7 +1,13 @@
 import { DollarSign, ShoppingCart, Clock, UserPlus } from "lucide-react";
 import { SummaryCard } from "../SummaryCard";
 
-export default function DashboardSummary({ summary }: { summary: any }) {
+interface DashboardSummaryData {
+  totalOrders: number;
+  pending: number;
+  totalRevenue: number;
+}
+
+export default function DashboardSummary({ summary }: { summary: DashboardSummaryData }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
       <SummaryCard

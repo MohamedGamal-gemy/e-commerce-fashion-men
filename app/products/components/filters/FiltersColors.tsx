@@ -1,11 +1,15 @@
+"use client";
+
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FilterCheckbox } from "./FilterCheckbox";
 import { PaletteIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Color } from "@/types/filter";
+
 
 interface FiltersColorsProps {
-  colors?: any[];
+  colors?: Color[];
   selected?: string[];
   onToggle?: (value: string) => void;
 }
@@ -19,9 +23,7 @@ export function FiltersColors({
 }: FiltersColorsProps) {
   const [showAll, setShowAll] = useState(false);
   const hasColors = colors && colors.length > 0;
-  const visibleColors = showAll
-    ? colors
-    : colors.slice(0, VISIBLE_COLORS_LIMIT);
+  const visibleColors = showAll ? colors : colors.slice(0, VISIBLE_COLORS_LIMIT);
   const hasMoreColors = colors.length > VISIBLE_COLORS_LIMIT;
 
   return (

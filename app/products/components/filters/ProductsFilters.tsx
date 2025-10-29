@@ -1,11 +1,15 @@
+"use client";
+
 import { memo, useMemo } from "react";
 import { FiltersHeader } from "./FiltersHeader";
 import { FiltersSubcategories } from "./FiltersSubcategories";
 import { FiltersColors } from "./FiltersColors";
+import { Color, Subcategory } from "@/types/filter";
+
 
 interface ProductsFiltersProps {
-  subcategories?: any[];
-  colors?: any[];
+  subcategories?: Subcategory[];
+  colors?: Color[];
   selectedColors?: string[];
   selectedSubcategories?: string[];
   onToggleColor?: (value: string) => void;
@@ -23,8 +27,8 @@ function ProductsFiltersComponent({
   onClearAll,
 }: ProductsFiltersProps) {
   const totalSelected = useMemo(
-    () => (selectedColors?.length || 0) + (selectedSubcategories?.length || 0),
-    [selectedColors?.length, selectedSubcategories?.length]
+    () => (selectedColors.length || 0) + (selectedSubcategories.length || 0),
+    [selectedColors.length, selectedSubcategories.length]
   );
 
   const handleClearAll = () => {

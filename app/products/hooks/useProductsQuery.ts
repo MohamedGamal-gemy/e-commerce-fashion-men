@@ -1,19 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { arrayToString } from "./useFilterArray";
+import { ProductsResponse } from "@/types/productList";
+// import type { ProductsResponse } from "@/types/product";
 
 interface ProductsQueryParams {
   selectedColors: string[];
   selectedSubcategories: string[];
-  initialData?: any;
-  firstRender?: Boolean;
+  initialData?: ProductsResponse; // ✅ Correct type
+  firstRender?: boolean;          // ✅ lowercase boolean
 }
 
 export function useProductsQuery({
   selectedColors,
   selectedSubcategories,
+  initialData,
   firstRender,
 }: ProductsQueryParams) {
-  return useQuery({
+  return useQuery<ProductsResponse>({
     queryKey: ["products", selectedColors, selectedSubcategories],
     queryFn: async () => {
       const colorQuery = selectedColors.length
@@ -33,11 +36,11 @@ export function useProductsQuery({
 
       const res = await fetch(url);
       if (!res.ok) throw new Error("فشل تحميل المنتجات");
-      return res.json();
+      return res.json() as Promise<ProductsResponse>; // ✅ Strongly typed
     },
-    // initialData,
+    initialData,       // ✅ Matches ProductsResponse
     enabled: !!firstRender,
     staleTime: 1000 * 30, // 30 ثانية
-    gcTime: 1000 * 60 * 5, // 5 دقايق
+    gcTime: 1000 * 60 * 5, // 5 دقائق
   });
 }

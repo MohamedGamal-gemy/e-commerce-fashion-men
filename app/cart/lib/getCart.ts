@@ -9,7 +9,7 @@ export const getSessionId = async (): Promise<string | null> => {
 export const getCart = async (): Promise<Cart> => {
   const sessionId = await getSessionId();
 
-  // ✅ شكل موحد لعربة التسوق الفارغة
+  // ✅ Unified empty cart shape
   const emptyCart: Cart = {
     _id: "",
     sessionId: sessionId ?? "",
@@ -37,10 +37,14 @@ export const getCart = async (): Promise<Cart> => {
 
     const data = await res.json();
 
-    // ✅ دايمًا نرجّع كارت موحّد
+    // ✅ Always return a consistent cart structure
     return data.cart ?? data ?? emptyCart;
-  } catch (err: any) {
-    console.error("❌ Cart fetch error:", err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("❌ Cart fetch error:", err.message);
+    } else {
+      console.error("❌ Unknown cart fetch error:", err);
+    }
     return emptyCart;
   }
 };

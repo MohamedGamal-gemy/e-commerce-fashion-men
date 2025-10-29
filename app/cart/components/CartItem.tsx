@@ -11,13 +11,7 @@ interface CartItemProps {
     size: string,
     newQuantity: number
   ) => void;
-  handleDelete: ({
-    variantId,
-    size,
-  }: {
-    variantId: string;
-    size: string;
-  }) => void;
+  handleDelete: (args: { variantId: string; size: string }) => void;
   isUpdating: boolean;
   isRemoving: boolean;
   isPending: number | null;
@@ -34,6 +28,9 @@ const CartItem = ({
   isPending,
   setIsPending,
 }: CartItemProps) => {
+  const variantColor = item.variantId?.color?.name ?? "N/A";
+  const variantImage = item.variantId?.images?.[0]?.url ?? "/placeholder.png";
+
   return (
     <div
       className="border border-white/10 rounded-xl p-4 w-full bg-slate-900/80 hover:bg-slate-900 
@@ -44,7 +41,7 @@ const CartItem = ({
         <div className="flex gap-4 items-start">
           <Image
             className="w-24 h-24 object-cover rounded-lg border border-white/10 object-top"
-            src={item.variantId.images?.[0]?.url || "/placeholder.png"}
+            src={variantImage}
             alt={item.productId.title}
             height={100}
             width={100}
@@ -58,7 +55,7 @@ const CartItem = ({
               LE {item.productId.price}
             </div>
             <div className="text-sm text-gray-400">
-              {item.size} · {item.variantId.color.name}
+              {item.size} · {variantColor}
             </div>
           </div>
         </div>
@@ -69,12 +66,12 @@ const CartItem = ({
             className="bg-slate-700 hover:bg-slate-600 px-3 py-1 text-lg font-semibold"
             disabled={isUpdating || item.quantity <= 1}
             onClick={() => {
+              setIsPending(i);
               handleQuantityChange(
                 item.variantId._id,
                 item.size,
                 item.quantity - 1
               );
-              setIsPending(i);
             }}
           >
             -
@@ -97,12 +94,12 @@ const CartItem = ({
             className="bg-slate-700 hover:bg-slate-600 px-3 py-1 text-lg font-semibold"
             disabled={isUpdating}
             onClick={() => {
+              setIsPending(i);
               handleQuantityChange(
                 item.variantId._id,
                 item.size,
                 item.quantity + 1
               );
-              setIsPending(i);
             }}
           >
             +

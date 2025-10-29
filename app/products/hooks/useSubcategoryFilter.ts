@@ -13,12 +13,11 @@ export function useSubcategoryFilter() {
   const selectedSubcategories = useFilterArray(selectedSubcategoriesString);
 
   // Debounced function لتحديث الـ URL
-  const debouncedSetSubcategories = useRef(
-    debounce((newSubcategories: string[]) => {
-      setSubcategoriesString(arrayToString(newSubcategories));
-    }, 300)
-  ).current;
-
+const debouncedSetSubcategories = useRef(
+  debounce((newSubcategories: string[]) => {
+    setSubcategoriesString(arrayToString(newSubcategories));
+  }, 300)
+).current;
   // دالة Toggle مع debounce
   const toggleSubcategory = useCallback(
     (value: string) => {

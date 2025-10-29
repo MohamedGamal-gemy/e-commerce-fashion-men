@@ -1,6 +1,7 @@
 "use client";
+
 import { motion, AnimatePresence } from "framer-motion";
-import { memo, useEffect, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { useProductsQuery } from "../hooks/useProductsQuery";
 import { useSubcategoryFilter } from "../hooks/useSubcategoryFilter";
 import { ProductCard } from "./ProductCard";
@@ -9,16 +10,17 @@ import { ProductSkeleton } from "./ui/ProductSkeleton";
 import { EmptyState } from "./EmptyState";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { useColorFilter } from "../hooks/useColorFilter";
-import type { Product } from "@/types/productList";
-// import type { Color, Subcategory } from "../types";
+// import type {  Product } from "@/types/product";
+import { Product, ProductsResponse } from "@/types/productList";
+import { Color, Subcategory } from "@/types/filter";
+
+// Optional: if you have these defined elsewhere, import them instead
+
 
 interface ProductListProps {
-  // initialData: ProductsResponse;
-  initialData: any;
-  subcategories: any;
-  colors: any;
-  // subcategories: Subcategory[];
-  // colors: Color[];
+  colors: Color[];
+  subcategories: Subcategory[];
+  initialData: ProductsResponse;
 }
 
 export const ProductList: React.FC<ProductListProps> = ({
@@ -43,7 +45,7 @@ export const ProductList: React.FC<ProductListProps> = ({
     firstRender: firstRender.current,
   });
 
-  // fallback للبيانات
+  // Use fallback data
   const products: Product[] = data?.products ?? initialData?.products ?? [];
   const hasActiveFilters =
     selectedColors.length > 0 || selectedSubcategories.length > 0;
@@ -124,24 +126,22 @@ export const ProductList: React.FC<ProductListProps> = ({
         {!isLoading && products.length > 0 && (
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3">
             <AnimatePresence mode="popLayout">
-              {products.map((product) =>
-                product ? (
-                  <motion.div
-                    key={product._id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{
-                      duration: 0.25,
-                      layout: { duration: 0.25 },
-                    }}
-                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                  >
-                    <ProductCard product={product} />
-                  </motion.div>
-                ) : null
-              )}
+              {products.map((product) => (
+                <motion.div
+                  key={product._id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{
+                    duration: 0.25,
+                    layout: { duration: 0.25 },
+                  }}
+                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
             </AnimatePresence>
           </div>
         )}

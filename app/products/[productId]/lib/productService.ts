@@ -1,13 +1,9 @@
-// import { Product } from "@/types/product";
-
-// export const fetchProduct = async (id: string): Promise<Product> => {
-//   const res = await axios.get<{ product: Product }>(
-//     `http://localhost:9000/api/products/admin/${id}`
-//   );
-//   return res.data.product;
-// };
-
 import { Product } from "@/types/product";
+
+interface ErrorResponse {
+  message?: string;
+  [key: string]: unknown;
+}
 
 export const fetchProduct = async (id: string): Promise<Product> => {
   const res = await fetch(
@@ -20,8 +16,8 @@ export const fetchProduct = async (id: string): Promise<Product> => {
   );
 
   if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    const message = (errorData as any)?.message || res.statusText;
+    const errorData = (await res.json().catch(() => ({}))) as ErrorResponse;
+    const message = errorData.message || res.statusText;
     throw new Error(message || "Failed to fetch product");
   }
 

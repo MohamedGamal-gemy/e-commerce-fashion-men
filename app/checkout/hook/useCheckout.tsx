@@ -20,6 +20,7 @@ const useCheckout = ({
     postalCode: z.string().min(2, "Postal code is required"),
     country: z.string().min(2, "Country is required"),
   });
+
   type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
   const {
@@ -30,70 +31,43 @@ const useCheckout = ({
     resolver: zodResolver(checkoutSchema),
   });
 
-  // const onSubmit = async (data: CheckoutFormData) => {
-  //   try {
-  //     if (!sessionId && !userId) throw new Error("Cart session not found");
-
-  //     // const res = await axios.post(
-  //     //   "http://localhost:9000/api/checkout/create-order",
-  //     //   {
-  //     //     sessionId,
-  //     //     userId,
-  //     //     billingDetails: data,
-  //     //   }
-  //     // );
-
-  //     // ✅ Redirect to Stripe Checkout
-  //     if (res.data.url) {
-  //       toast.success("Redirecting to payment...");
-  //       window.location.href = res.data.url;
-  //     } else {
-  //       toast.error("Failed to get payment link");
-  //     }
-  //   } catch (err: any) {
-  //     console.error("❌ Checkout error:", err);
-  //     toast.error(err.response?.data?.error || err.message);
-  //   }
-  // };
-
   const onSubmit = async (data: CheckoutFormData) => {
     try {
       if (!sessionId && !userId) throw new Error("Cart session not found");
 
-      const res = await fetch(
-        "http://localhost:9000/api/checkout/create-order",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            sessionId,
-            userId,
-            billingDetails: data,
-          }),
-        }
-      );
+      const res = await fetch("http://localhost:9000/api/checkout/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          userId,
+          billingDetails: data,
+        }),
+      });
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(
-          errorData?.error || `Failed to create order: ${res.status}`
-        );
+        throw new Error(errorData?.error || `Failed to create order: ${res.status}`);
       }
 
       const result = await res.json();
 
-      // ✅ Redirect to Stripe Checkout
       if (result.url) {
         toast.success("Redirecting to payment...");
         window.location.href = result.url;
       } else {
         toast.error("Failed to get payment link");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      // ✅ Replaced `any` with `unknown` and handled safely
       console.error("❌ Checkout error:", err);
-      toast.error(err.message || "Something went wrong during checkout");
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" && err !== null && "message" in err
+            ? String((err as { message?: string }).message)
+            : "Something went wrong during checkout";
+      toast.error(message);
     }
   };
 

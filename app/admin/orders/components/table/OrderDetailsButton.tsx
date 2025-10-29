@@ -3,8 +3,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { OrderDetailsModal } from "./OrderDetailsModal";
+import { Order } from "@/types/orders.types";
 
-export function OrderDetailsButton({ order }: { order: any }) {
+interface OrderDetailsButtonProps {
+  order: Partial<Order>; // ✅ Accept partial orders
+}
+
+export function OrderDetailsButton({ order }: OrderDetailsButtonProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,7 +25,7 @@ export function OrderDetailsButton({ order }: { order: any }) {
       <OrderDetailsModal
         open={open}
         onClose={() => setOpen(false)}
-        order={order}
+        order={order} // لو OrderDetailsModal محتاج Order كامل, خليها Partial<Order> | null
       />
     </>
   );

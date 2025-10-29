@@ -76,7 +76,7 @@ export default function ClientProductDetails({ product, sessionId }: Props) {
         <ProductSummary
           product={product}
           activeVariant={activeVariant}
-          activeSize={activeSize}
+          activeSize={activeSize || ""}
           selectedStock={selectedStock}
           onSelectVariant={handleSelectVariant}
           onSelectSize={handleSelectSize}

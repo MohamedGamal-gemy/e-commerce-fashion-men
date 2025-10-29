@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { currency } from "../utilities";
+import Image from "next/image";
 
 // ✅ تعريف نوع المنتج الواحد
 type ProductItem = {
@@ -37,9 +38,11 @@ const TopProductsList = ({ products = [] }: TopProductsListProps) => {
             >
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-slate-800 rounded overflow-hidden flex-shrink-0">
-                  <img
-                    src={p.image?.url}
+                  <Image
+                    src={p.image?.url || "/placeholder.png"}
                     alt={p.name}
+                    width={48}
+                    height={48}
                     className="w-full h-full object-cover"
                   />
                 </div>

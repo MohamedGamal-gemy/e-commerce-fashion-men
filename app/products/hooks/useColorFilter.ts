@@ -1,3 +1,4 @@
+// app/products/hooks/useColorFilter.ts
 import { useQueryState } from "nuqs";
 import { useCallback, useRef } from "react";
 import { debounce } from "../utils/debounce";
@@ -11,20 +12,20 @@ export function useColorFilter() {
   // تحويل الـ string لـ array
   const selectedColors = useFilterArray(selectedColorsString);
 
-  // Debounced function لتحديث الـ URL
+  // ✅ Debounced function لتحديث الـ URL
+  // نحدد النوع بأن الدالة تأخذ string[]
   const debouncedSetColors = useRef(
     debounce((newColors: string[]) => {
       setColorsString(arrayToString(newColors));
     }, 300)
   ).current;
-
   // دالة Toggle مع debounce
   const toggleColor = useCallback(
     (value: string) => {
       const newColors = selectedColors.includes(value)
         ? selectedColors.filter((v) => v !== value)
         : [...selectedColors, value];
-      
+
       debouncedSetColors(newColors);
     },
     [selectedColors, debouncedSetColors]
@@ -44,12 +45,10 @@ export function useColorFilter() {
   );
 
   return {
-    selectedColors,      
-    selectedColorsString, 
+    selectedColors,
+    selectedColorsString,
     toggleColor,
     clearColors,
     setColors,
   };
 }
-
-

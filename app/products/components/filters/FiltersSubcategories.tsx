@@ -1,9 +1,13 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { FilterCheckbox } from "./FilterCheckbox";
 import { LayersIcon } from "lucide-react";
+import { Subcategory } from "@/types/filter";
+
 
 interface FiltersSubcategoriesProps {
-  subcategories?: any[];
+  subcategories?: Subcategory[];
   selected?: string[];
   onToggle?: (value: string) => void;
 }
@@ -13,7 +17,7 @@ export function FiltersSubcategories({
   selected = [],
   onToggle,
 }: FiltersSubcategoriesProps) {
-  const hasSubcategories = subcategories?.length > 0;
+  const hasSubcategories = subcategories.length > 0;
 
   const handleToggle = (value: string) => {
     onToggle?.(value);
@@ -25,18 +29,18 @@ export function FiltersSubcategories({
         <LayersIcon className="h-5 w-5 text-blue-400" />
         <h4 className="text-slate-300 text-sm font-semibold">Subcategories</h4>
         <span className="text-slate-500 text-sm">
-          ({subcategories?.length || 0})
+          ({subcategories.length})
         </span>
       </div>
 
       {hasSubcategories ? (
-        <div className="space-y-2 max-h-80 ">
+        <div className="space-y-2 max-h-80">
           {subcategories.map((subcategory) => (
             <motion.div key={subcategory._id}>
               <FilterCheckbox
                 id={`subcategory-${subcategory._id}`}
                 label={subcategory.name}
-                checked={selected?.includes(subcategory.name) || false}
+                checked={selected.includes(subcategory.name)}
                 onCheckedChange={(checked: boolean | "indeterminate") => {
                   if (checked === "indeterminate") return;
                   handleToggle(subcategory.name);

@@ -35,3 +35,16 @@ export interface Product {
 export interface ProductResponse {
   product: Product;
 }
+
+export interface ProductDetails {
+  _id: string;
+  title: string;
+  description: string;
+  price: number;
+  rating: number;
+  subcategory: string;
+  createdAt?: string;
+  updatedAt?: string;
+  totalStock?: number;
+  variants?: Variant[];
+}

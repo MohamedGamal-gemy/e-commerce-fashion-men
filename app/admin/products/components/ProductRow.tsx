@@ -7,7 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { RatingStars } from "./RatingStars";
 import { ProductDetailsDialog } from "./product-details/ProductDetailsDialog";
 import { ProductActions } from "./ProductActions";
-export function ProductRow({ product }: { product: any }) {
+import type { ProductAdmin } from "@/types/productsAdmin";
+
+interface ProductRowProps {
+  product: ProductAdmin;
+}
+
+export function ProductRow({ product }: ProductRowProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -34,39 +40,44 @@ export function ProductRow({ product }: { product: any }) {
             {product.title}
           </p>
         </TableCell>
+
         {/* ✅ Subcategory */}
         <TableCell className="text-slate-400 capitalize">
           {product.subcategory || "—"}
         </TableCell>
+
         {/* ✅ Price */}
         <TableCell className="text-center text-green-400 font-semibold">
           ${product.price?.toFixed(2)}
         </TableCell>
+
         {/* ✅ Stock */}
         <TableCell
-          className={`text-center font-medium ${
-            product.totalStock > 0 ? "text-emerald-400" : "text-red-400"
-          }`}
+          className={`text-center font-medium ${product.totalStock > 0 ? "text-emerald-400" : "text-red-400"
+            }`}
         >
           {product.totalStock}
         </TableCell>
+
         {/* ✅ Rating */}
         <TableCell className="text-center">
           <RatingStars rating={product.rating || 0} />
         </TableCell>
+
         {/* ✅ Status */}
         <TableCell className="text-center">
           <Badge
             variant="outline"
-            className={`px-2 py-0.5 text-xs rounded-full ${
-              product.totalStock > 0
+            className={`px-2 py-0.5 text-xs rounded-full ${product.totalStock > 0
                 ? "border-emerald-500 text-emerald-400"
                 : "border-red-500 text-red-400"
-            }`}
+              }`}
           >
             {product.totalStock > 0 ? "Active" : "Out of Stock"}
           </Badge>
         </TableCell>
+
+        {/* ✅ Actions */}
         <TableCell className="text-center">
           <ProductActions
             row={product}

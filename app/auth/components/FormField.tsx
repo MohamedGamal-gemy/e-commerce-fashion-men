@@ -1,17 +1,3 @@
-// "use client";
-// import React, { ReactNode } from "react";
-// import { Label } from "@/components/ui/label";
-
-// export default function FormField({ label, children, error }: { label?: string; children: ReactNode; error?: string }) {
-//   return (
-//     <div className="flex flex-col gap-2">
-//       {label && <Label className="text-slate-200">{label}</Label>}
-//       {children}
-//       {error && <p className="text-sm text-rose-400">{error}</p>}
-//     </div>
-//   );
-// }
-
 "use client";
 
 import React, { ReactNode } from "react";
@@ -34,15 +20,19 @@ export default function FormField({
         </Label>
       )}
 
-      <div className="relative group z-">
-        <div className="relative z-10 rounded-lg bg-slate-800/60 border
+      <div className="relative group">
+        <div
+          className="relative z-10 rounded-lg bg-slate-800/60 border
          border-slate-700/60 focus-within:border-sky-500/70 shadow-[inset_0_0_10px_rgba(15,23,42,0.6)] 
-         transition-all duration-300 ease-out">
+         transition-all duration-300 ease-out"
+        >
           {children}
         </div>
 
-        <div className="absolute -inset-[1px] rounded-lg opacity-0 group-focus-within:opacity-100 
-        transition-opacity duration-500 bg-gradient-to-r from-sky-500/40 to-cyan-400/30 blur-md" />
+        <div
+          className="absolute -inset-[1px] rounded-lg opacity-0 group-focus-within:opacity-100 
+        transition-opacity duration-500 bg-gradient-to-r from-sky-500/40 to-cyan-400/30 blur-md"
+        />
       </div>
 
       {error && (

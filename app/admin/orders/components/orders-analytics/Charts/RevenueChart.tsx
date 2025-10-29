@@ -10,8 +10,13 @@ import {
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import { AnalyticsData } from "@/types/analytics.types"; // ✅ make sure path is correct
 
-const RevenueChart = ({ data }: { data: any }) => {
+const RevenueChart = ({
+  data,
+}: {
+  data: Pick<AnalyticsData, "trend">;
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}

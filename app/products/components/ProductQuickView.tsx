@@ -4,18 +4,33 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
+import type { ProductResponse } from "@/types/product";
 
-export function ProductQuickView({ open, onOpenChange, productId }: any) {
-  const { data, isLoading } = useQuery({
+interface ProductQuickViewProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  productId: string;
+}
+
+export function ProductQuickView({
+  open,
+  onOpenChange,
+  productId,
+}: ProductQuickViewProps) {
+  const { data, isLoading } = useQuery<ProductResponse>({
     queryKey: ["product", productId],
     queryFn: async () => {
       const res = await fetch(`http://localhost:9000/api/products/admin/${productId}`);
-      return res.json();
+      if (!res.ok) throw new Error("فشل تحميل تفاصيل المنتج");
+      return res.json() as Promise<ProductResponse>;
     },
-    enabled: open, // 👈 لا يجلب البيانات إلا لما يُفتح المودال
+    enabled: open, // ✅ Fetches only when modal is open
   });
 
   const product = data?.product;
+
+  const firstVariant = product?.variants?.[0];
+  const firstImage = firstVariant?.images?.[0]?.url ?? "/placeholder.png";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -33,26 +48,42 @@ export function ProductQuickView({ open, onOpenChange, productId }: any) {
             </DialogHeader>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-              {/* Images */}
+              {/* Product image */}
               <div className="relative h-64 w-full">
                 <Image
-                  src={product.variants?.[0]?.images?.[0]?.url || product.variants?.[0]?.mainImage}
+                  src={firstImage}
                   alt={product.title}
                   fill
                   className="object-cover rounded-lg"
                 />
               </div>
 
-              {/* Info */}
+              {/* Product info */}
               <div className="flex flex-col justify-between">
                 <div>
                   <p className="text-sky-400 font-semibold mb-2">
-                    {product.price} EGP
+                    {product.price.toLocaleString()} EGP
                   </p>
-                  <p className="text-sm text-slate-300 mb-3">{product.subcategory}</p>
+                  <p className="text-sm text-slate-300 mb-3">
+                    {product.subcategory ?? "Uncategorized"}
+                  </p>
                   <p className="text-sm text-slate-400 line-clamp-5">
                     {product.description || "No description available."}
                   </p>
+
+                  {/* Variant Colors */}
+                  {product.variants?.length > 1 && (
+                    <div className="mt-3 flex gap-2 items-center">
+                      {product.variants.map((variant) => (
+                        <div
+                          key={variant._id}
+                          title={variant.color.name}
+                          className="w-6 h-6 rounded-full border border-slate-600"
+                          style={{ backgroundColor: variant.color.value }}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-4">

@@ -19,7 +19,6 @@ function formatDate(date: string) {
   });
 }
 
-// ✅ أولاً: عرف نوع البيانات اللي بتيجي في props
 interface OrderStatus {
   status: string;
   count: number;
@@ -30,23 +29,34 @@ interface OrdersTrendItem {
   statuses: OrderStatus[];
 }
 
-// ✅ ثانيًا: عرّف نوع الـ props
 interface OrdersByStatusProps {
   ordersTrend?: OrdersTrendItem[];
 }
 
+// ✅ نوع آمن بدل any
+type StatusData = {
+  date: string;
+  paid?: number;
+  pending?: number;
+  cancelled?: number;
+  [key: string]: string | number | undefined;
+};
+
 const OrdersByStatus: React.FC<OrdersByStatusProps> = ({
   ordersTrend = [],
 }) => {
-  const normalized = ordersTrend.map((d) => {
-    // هنا TypeScript هيعرف إن d من نوع OrdersTrendItem
-    const obj: Record<string, any> = { date: formatDate(d.date) };
+  const normalized: StatusData[] = ordersTrend.map((d) => {
+    const obj: StatusData = { date: formatDate(d.date) };
+
     (d.statuses || []).forEach((s) => {
       obj[s.status] = s.count;
     });
-    obj.paid = obj.paid || 0;
-    obj.pending = obj.pending || 0;
-    obj.cancelled = obj.cancelled || 0;
+
+    // تأكد أن الثلاث حالات الأساسية موجودة
+    obj.paid = obj.paid ?? 0;
+    obj.pending = obj.pending ?? 0;
+    obj.cancelled = obj.cancelled ?? 0;
+
     return obj;
   });
 
@@ -56,13 +66,13 @@ const OrdersByStatus: React.FC<OrdersByStatusProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="bg-gradient-to-b from-slate-950 via-slate-900/95
-       to-slate-950 border border-slate-800 shadow-lg hover:shadow-cyan-900/10 transition-all duration-300 backdrop-blur-sm">
+      <Card className="bg-gradient-to-b from-slate-950 via-slate-900/95 to-slate-950 border border-slate-800 shadow-lg hover:shadow-cyan-900/10 transition-all duration-300 backdrop-blur-sm">
         <CardHeader className="pb-2">
           <CardTitle className="text-slate-100 text-base font-semibold tracking-wide">
             Orders by Status
           </CardTitle>
         </CardHeader>
+
         <CardContent>
           <div className="h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -91,6 +101,7 @@ const OrdersByStatus: React.FC<OrdersByStatusProps> = ({
                   stroke="#1e293b"
                   opacity={0.4}
                 />
+
                 <XAxis
                   dataKey="date"
                   stroke="#64748b"
@@ -98,12 +109,14 @@ const OrdersByStatus: React.FC<OrdersByStatusProps> = ({
                   axisLine={false}
                   tickLine={false}
                 />
+
                 <YAxis
                   stroke="#64748b"
                   tick={{ fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
                 />
+
                 <Tooltip
                   cursor={{ fill: "rgba(255,255,255,0.02)" }}
                   contentStyle={{
@@ -114,6 +127,7 @@ const OrdersByStatus: React.FC<OrdersByStatusProps> = ({
                     backdropFilter: "blur(8px)",
                   }}
                 />
+
                 <Legend wrapperStyle={{ color: "#94a3b8", fontSize: "12px" }} />
 
                 <Bar
@@ -123,6 +137,7 @@ const OrdersByStatus: React.FC<OrdersByStatusProps> = ({
                   radius={[4, 4, 0, 0]}
                   isAnimationActive={false}
                 />
+
                 <Bar
                   dataKey="pending"
                   stackId="a"
@@ -130,6 +145,7 @@ const OrdersByStatus: React.FC<OrdersByStatusProps> = ({
                   radius={[4, 4, 0, 0]}
                   isAnimationActive={false}
                 />
+
                 <Bar
                   dataKey="cancelled"
                   stackId="a"

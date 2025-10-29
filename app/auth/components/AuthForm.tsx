@@ -1,8 +1,9 @@
 "use client";
+
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type z } from "zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mail, Lock, User } from "lucide-react";
@@ -13,38 +14,53 @@ import { LoginSchema, RegisterSchema } from "../validation/auth";
 
 type Mode = "login" | "register";
 
+// أنواع منفصلة
+type LoginValues = z.infer<typeof LoginSchema>;
+type RegisterValues = z.infer<typeof RegisterSchema>;
+
 export default function AuthForm({ mode }: { mode: Mode }) {
   const router = useRouter();
-  const schema = mode === "login" ? LoginSchema : RegisterSchema;
-  type SchemaType = z.infer<typeof schema>;
+  const isRegister = mode === "register";
+
+  // ✅ استخدم النوع الصحيح بناءً على الـ mode
+  const form = useForm<RegisterValues | LoginValues>({
+    resolver: zodResolver(isRegister ? RegisterSchema : LoginSchema),
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SchemaType>({ resolver: zodResolver(schema) });
+  } = form;
 
-  async function onSubmit(values: SchemaType) {
+  async function onSubmit(values: RegisterValues | LoginValues) {
     try {
       const url =
         mode === "login"
           ? `${process.env.NEXT_PUBLIC_API_URL}/auth/login`
           : `${process.env.NEXT_PUBLIC_API_URL}/auth/register`;
+
       await apiPost(url, values);
       router.push("/");
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     }
   }
 
+  // ✅ نستخدم type narrowing عشان TS يعرف أن errors ممكن تحتوي username
+  const registerErrors = errors as FieldErrors<RegisterValues>;
+  const loginErrors = errors as FieldErrors<LoginValues>;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {mode === "register" && (
+      {isRegister && (
         <FormField
           label="Username"
-            error={errors.username?.message ?? errors.name?.message}
-
-          // error={errors?.username?.message || errors?.name?.message}
+          error={registerErrors.username?.message}
         >
           <div className="relative">
             <User
@@ -52,7 +68,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
               size={16}
             />
             <Input
-              {...register("username")}
+              {...register("username" as keyof RegisterValues)}
               placeholder="John Doe"
               className="pl-10 bg-slate-800 border-slate-700 text-slate-100"
             />
@@ -60,7 +76,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
         </FormField>
       )}
 
-      <FormField label="Email" error={errors?.email?.message}>
+      <FormField label="Email" error={loginErrors.email?.message}>
         <div className="relative">
           <Mail
             className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -74,7 +90,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
         </div>
       </FormField>
 
-      <FormField label="Password" error={errors?.password?.message}>
+      <FormField label="Password" error={loginErrors.password?.message}>
         <div className="relative">
           <Lock
             className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -94,7 +110,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
         disabled={isSubmitting}
         className="w-full mt-2 bg-cyan-500 hover:bg-cyan-600"
       >
-        {mode === "login" ? "Sign In" : "Create Account"}
+        {isRegister ? "Create Account" : "Sign In"}
       </Button>
     </form>
   );

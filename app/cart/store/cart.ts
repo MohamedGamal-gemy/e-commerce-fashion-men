@@ -2,13 +2,13 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Cart } from "@/types/cart"; // ✅ استيراد الـ types من ملفك
+import { Cart } from "@/types/cart";
 
 /* -------------------------------------------------------------------------- */
 /*                               🔹 API Response Type                         */
 /* -------------------------------------------------------------------------- */
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success?: boolean;
   message?: string;
   error?: string;
@@ -19,7 +19,7 @@ export interface ApiResponse<T = any> {
 /*                               🔹 API Helper                                */
 /* -------------------------------------------------------------------------- */
 
-async function apiRequest<T = any>(
+async function apiRequest<T = unknown>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> {
@@ -37,9 +37,12 @@ async function apiRequest<T = any>(
     }
 
     return data as T;
-  } catch (err: any) {
-    console.error("API request error:", err.message);
-    throw err;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("API request error:", err.message);
+      throw err;
+    }
+    throw new Error("Unknown API error");
   }
 }
 
@@ -67,8 +70,8 @@ const fetchCart = async (sessionId: string | null): Promise<Cart> => {
     const url = `http://localhost:9000/api/cart?sessionId=${encodeURIComponent(sessionId)}`;
     const data = await apiRequest<ApiResponse<Cart>>(url);
     return data?.cart || emptyCart;
-  } catch (err: any) {
-    console.error("❌ Failed to fetch cart:", err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) console.error("❌ Failed to fetch cart:", err.message);
     return emptyCart;
   }
 };
@@ -79,16 +82,18 @@ export function useCart(sessionId: string | null, initialData?: Cart) {
     queryFn: () => fetchCart(sessionId),
     initialData: initialData ?? emptyCart,
     enabled: !!sessionId,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    gcTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
-    placeholderData: (prev) => prev ?? emptyCart, // ✅ البديل عن keepPreviousData
+    placeholderData: (prev) => prev ?? emptyCart,
     notifyOnChangeProps: ["data"],
   });
 }
+
 /* -------------------------------------------------------------------------- */
 /*                             🔹 Add To Cart                                 */
 /* -------------------------------------------------------------------------- */
+
 export interface AddToCartInput {
   productId: string;
   variantId: string;
@@ -97,20 +102,12 @@ export interface AddToCartInput {
   sessionId?: string;
 }
 
-// ✅ دالة إرسال الطلب للـ API
-const addToCart = async (cartItem: AddToCartInput): Promise<ApiResponse> => {
-  const res = await apiRequest<ApiResponse>(
-    "http://localhost:9000/api/cart/add",
-    {
-      method: "POST",
-      body: JSON.stringify(cartItem),
-    }
-  );
+const addToCart = async (cartItem: AddToCartInput): Promise<ApiResponse> =>
+  apiRequest<ApiResponse>("http://localhost:9000/api/cart/add", {
+    method: "POST",
+    body: JSON.stringify(cartItem),
+  });
 
-  return res;
-};
-
-// ✅ الهوك الخاص بالإضافة للسلة
 export function useAddToCart() {
   const queryClient = useQueryClient();
 
@@ -121,11 +118,7 @@ export function useAddToCart() {
   >({
     mutationFn: addToCart,
     onSuccess: (data, variables) => {
-      // تحديث الكارت بعد الإضافة
-      queryClient.invalidateQueries({
-        queryKey: ["cart", variables.sessionId],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["cart", variables.sessionId] });
       toast.success(data?.message || "Item added to cart successfully ✅");
     },
     onError: (err) => {
@@ -154,13 +147,10 @@ interface UpdateCartInput {
 }
 
 const updateCartQuantity = async (itemData: UpdateCartInput) =>
-  apiRequest<ApiResponse>(
-    "http://localhost:9000/api/cart",
-    {
-      method: "PUT",
-      body: JSON.stringify(itemData),
-    }
-  );
+  apiRequest<ApiResponse>("http://localhost:9000/api/cart", {
+    method: "PUT",
+    body: JSON.stringify(itemData),
+  });
 
 export function useUpdateCartQuantity(sessionId: string | null) {
   const queryClient = useQueryClient();
@@ -175,8 +165,7 @@ export function useUpdateCartQuantity(sessionId: string | null) {
       toast.success("Cart updated successfully 🛒");
       queryClient.invalidateQueries({ queryKey: ["cart", sessionId] });
     },
-    onError: (err) =>
-      toast.error(err.message || "Failed to update cart quantity."),
+    onError: (err) => toast.error(err.message || "Failed to update cart quantity."),
   });
 
   return {
@@ -198,13 +187,10 @@ interface RemoveCartInput {
 }
 
 const removeItemFromCart = async (itemData: RemoveCartInput) =>
-  apiRequest<ApiResponse>(
-    "http://localhost:9000/api/cart",
-    {
-      method: "DELETE",
-      body: JSON.stringify(itemData),
-    }
-  );
+  apiRequest<ApiResponse>("http://localhost:9000/api/cart", {
+    method: "DELETE",
+    body: JSON.stringify(itemData),
+  });
 
 export function useRemoveFromCart(sessionId: string | null) {
   const queryClient = useQueryClient();
@@ -235,13 +221,10 @@ export function useRemoveFromCart(sessionId: string | null) {
 /* -------------------------------------------------------------------------- */
 
 const clearCart = async (sessionId: string | null) =>
-  apiRequest<ApiResponse>(
-    "http://localhost:9000/api/cart",
-    {
-      method: "DELETE",
-      body: JSON.stringify({ sessionId, deleteAll: true }),
-    }
-  );
+  apiRequest<ApiResponse>("http://localhost:9000/api/cart", {
+    method: "DELETE",
+    body: JSON.stringify({ sessionId, deleteAll: true }),
+  });
 
 export function useClearCart(sessionId: string | null) {
   const queryClient = useQueryClient();

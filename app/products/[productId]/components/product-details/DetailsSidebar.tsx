@@ -21,36 +21,56 @@ export function DetailsSidebar({
   activeImage?: VariantImage | null;
 }) {
   const [qty, setQty] = React.useState(1);
-  const selectedStock = activeVariant.sizes.find((s) => s.size === activeSize)?.stock ?? 0;
+
+  const selectedStock =
+    activeVariant.sizes.find((s) => s.size === activeSize)?.stock ?? 0;
+
+  // ✅ Fixed useEffect: no missing deps & no infinite loops
   React.useEffect(() => {
-    if (qty > selectedStock && selectedStock > 0) setQty(selectedStock);
-    if (selectedStock === 0) setQty(1);
+    setQty((prevQty) => {
+      if (selectedStock === 0) return 1;
+      if (prevQty > selectedStock) return selectedStock;
+      return prevQty;
+    });
   }, [selectedStock]);
 
   return (
     <Card className="bg-slate-900 border-slate-800 sticky top-8 rounded-2xl overflow-hidden">
       <CardContent className="p-5 space-y-4">
-        {/* small variant preview image */}
+        {/* Small variant preview image */}
         <div className="w-full h-40 relative rounded-md overflow-hidden bg-slate-800">
           {activeImage ? (
-            <Image src={activeImage.url} alt="variant" fill className="object-contain p-4" />
+            <Image
+              src={activeImage.url}
+              alt="variant"
+              fill
+              className="object-contain p-4"
+            />
           ) : (
-            <div className="flex items-center justify-center h-full text-slate-400">No preview</div>
+            <div className="flex items-center justify-center h-full text-slate-400">
+              No preview
+            </div>
           )}
         </div>
 
+        {/* Product title and category */}
         <div>
           <h3 className="text-lg font-semibold">{product.title}</h3>
           <div className="text-sm text-slate-400">{product.subcategory}</div>
         </div>
 
+        {/* Price and rating */}
         <div className="flex items-center justify-between">
-          <div className="text-xl font-bold">EGP {product.price.toLocaleString()}</div>
+          <div className="text-xl font-bold">
+            EGP {product.price.toLocaleString()}
+          </div>
           <div className="flex items-center gap-2 text-slate-300">
-            <Star size={14} /> <span className="font-medium">{product.rating}</span>
+            <Star size={14} />
+            <span className="font-medium">{product.rating}</span>
           </div>
         </div>
 
+        {/* Quantity and wishlist */}
         <div className="flex items-center gap-3">
           <button
             onClick={() => console.log("wishlist")}
@@ -78,9 +98,12 @@ export function DetailsSidebar({
             </button>
           </div>
 
-          <div className="text-sm text-slate-400 ml-auto">{selectedStock} in stock</div>
+          <div className="text-sm text-slate-400 ml-auto">
+            {selectedStock} in stock
+          </div>
         </div>
 
+        {/* Add to cart button */}
         <Button
           className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-500"
           onClick={() => onAddToCart(qty)}
@@ -89,16 +112,20 @@ export function DetailsSidebar({
           <ShoppingCart size={16} /> Add to cart
         </Button>
 
+        {/* Delivery info */}
         <div className="flex items-center gap-2 text-sm text-slate-400 mt-1">
           <Truck size={16} />
           <span>Free delivery for orders over 2000 EGP · 30-day returns</span>
         </div>
 
+        {/* Selected color and size */}
         <div className="text-sm text-slate-400 mt-2">
           <div className="font-medium text-slate-200 mb-1">Selected</div>
           <div>
             <span className="text-slate-300">{activeVariant.color.name}</span>
-            {activeSize && <span className="text-slate-400">  / {activeSize}</span>}
+            {activeSize && (
+              <span className="text-slate-400"> / {activeSize}</span>
+            )}
           </div>
         </div>
       </CardContent>

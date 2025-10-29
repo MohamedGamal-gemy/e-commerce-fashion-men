@@ -7,10 +7,15 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import { PieChart, Pie, Cell } from "recharts";
+import { AnalyticsData } from "@/types/analytics.types";
 
 const COLORS = ["#10b981", "#f59e0b", "#ef4444"];
 
-export default function OrdersPieChart({ summary }: { summary: any }) {
+export default function OrdersPieChart({
+  summary,
+}: {
+  summary: AnalyticsData["summary"];
+}) {
   const pieData = [
     { name: "Paid", value: summary.paid },
     { name: "Pending", value: summary.pending },

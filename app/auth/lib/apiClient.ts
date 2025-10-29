@@ -1,4 +1,4 @@
-export async function apiPost<T>(url: string, body: any): Promise<T> {
+export async function apiPost<T, B = unknown>(url: string, body: B): Promise<T> {
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -7,6 +7,6 @@ export async function apiPost<T>(url: string, body: any): Promise<T> {
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Request failed");
-  return data;
+  if (!res.ok) throw new Error((data as { message?: string }).message || "Request failed");
+  return data as T;
 }

@@ -36,15 +36,24 @@ export default function ProductSummary({
   const { addToCart, isAdding } = useAddToCart();
 
   const handleAddToCart = async () => {
+    if (!activeVariant?._id) {
+      toast.error("Please select a variant before adding to cart.");
+      return;
+    }
+
+    if (!activeSize) {
+      toast.error("Please select a size before adding to cart.");
+      return;
+    }
+
     const payload: AddToCartInput = {
       productId: product._id,
-      variantId: activeVariant?._id!,
-      size: activeSize!,
+      variantId: activeVariant._id,
+      size: activeSize,
       quantity: qty,
-      sessionId: sessionId as string,
+      sessionId: sessionId ?? "", // fallback if null
     };
 
-    // استدعاء الميوتاشن من React Query
     addToCart(payload, {
       onSuccess: () => {
         toast.success("Added to cart successfully!");

@@ -1,20 +1,21 @@
-"use client";
-
-import Image from "next/image";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { motion } from "framer-motion";
+import { Variant } from "@/types/product";
+import Image from "next/image";
+import {motion} from "framer-motion";
+
+interface ProductImagesProps {
+  mainImage: string | null;
+  setMainImage: (url: string) => void;
+  variant: Variant | null; // ✅ اسمح بـ null
+  title: string;
+}
 
 export function ProductImages({
   mainImage,
   setMainImage,
   variant,
   title,
-}: {
-  mainImage: string | null;
-  setMainImage: (url: string) => void;
-  variant: any;
-  title: string;
-}) {
+}: ProductImagesProps) {
   return (
     <div className="flex flex-col items-center w-full md:w-1/2">
       <motion.div
@@ -34,24 +35,23 @@ export function ProductImages({
 
       <ScrollArea className="w-64 mt-4 pb-2">
         <div className="flex gap-2 justify-start px-2 pb-2">
-          {variant?.images?.map((img: any, idx: number) => (
+          {variant?.images?.map((img) => (
             <button
-              key={idx}
+              key={img._id}
               onClick={() => setMainImage(img.url)}
-              className={`relative w-16 h-16 rounded-md overflow-hidden border ${
-                mainImage === img.url
+              className={`relative w-16 h-16 rounded-md overflow-hidden border ${mainImage === img.url
                   ? "border-sky-500"
                   : "border-slate-800 hover:border-sky-700"
-              } transition`}
+                } transition`}
             >
               <Image
                 src={img.url}
-                alt={`Thumbnail ${idx}`}
+                alt={img._id}
                 fill
                 className="object-cover"
               />
             </button>
-          ))}
+          )) || <p className="text-slate-400 text-sm">No images available</p>}
         </div>
         <ScrollBar
           orientation="horizontal"

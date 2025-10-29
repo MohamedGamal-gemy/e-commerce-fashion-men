@@ -1,4 +1,17 @@
-"use client"
+"use client";
+
+import { Variant } from "@/types/product";
+
+
+interface ProductVariantsProps {
+  variants: Variant[];
+  selectedVariant: Variant | null;
+  selectedSize: string | null;
+  onSelectSize: (size: string) => void;
+  onSelectVariant: (variant: Variant) => void;
+  mode?: "admin" | "user";
+}
+
 export function ProductVariants({
   variants,
   selectedVariant,
@@ -6,14 +19,7 @@ export function ProductVariants({
   onSelectSize,
   onSelectVariant,
   mode = "user",
-}: {
-  variants: any[];
-  selectedVariant: any;
-  selectedSize: string | null;
-  onSelectSize: (size: string) => void;
-  onSelectVariant: (variant: any) => void;
-  mode?: "admin" | "user";
-}) {
+}: ProductVariantsProps) {
   return (
     <div className="-mt-3">
       <h3 className="text-slate-100 font-medium mb-3">Variants</h3>
@@ -21,9 +27,9 @@ export function ProductVariants({
       {/* 🎨 Colors */}
       {variants?.length ? (
         <div className="flex flex-wrap gap-3 mb-5">
-          {variants.map((variant, idx) => (
+          {variants.map((variant) => (
             <button
-              key={idx}
+              key={variant._id}
               onClick={() => onSelectVariant(variant)}
               className={`flex items-center gap-2 px-3 py-1 rounded-lg border transition ${
                 selectedVariant?._id === variant._id
@@ -36,7 +42,7 @@ export function ProductVariants({
                 style={{ backgroundColor: variant.color?.value }}
               ></span>
               <span className="text-slate-300 text-sm">
-                {variant.color?.name}
+                {variant.color?.name || "Unnamed"}
               </span>
             </button>
           ))}
@@ -46,9 +52,9 @@ export function ProductVariants({
       )}
 
       {/* 📏 Sizes */}
-      {selectedVariant?.sizes?.length && (
+      {selectedVariant?.sizes?.length ? (
         <div className="flex flex-wrap gap-2">
-          {selectedVariant.sizes.map((s: any, i: number) => {
+          {selectedVariant.sizes.map((s, i) => {
             const isSelected = selectedSize === s.size;
             return (
               <button
@@ -68,7 +74,7 @@ export function ProductVariants({
             );
           })}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
