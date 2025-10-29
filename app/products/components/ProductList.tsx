@@ -41,7 +41,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   const { data, isLoading, error, isFetching } = useProductsQuery({
     selectedColors,
     selectedSubcategories,
-    initialData,
+    // initialData,
     firstRender: firstRender.current,
   });
 

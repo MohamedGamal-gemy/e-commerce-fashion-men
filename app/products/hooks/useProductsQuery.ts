@@ -13,7 +13,7 @@ interface ProductsQueryParams {
 export function useProductsQuery({
   selectedColors,
   selectedSubcategories,
-  initialData,
+  // initialData,
   firstRender,
 }: ProductsQueryParams) {
   return useQuery<ProductsResponse>({
@@ -38,7 +38,7 @@ export function useProductsQuery({
       if (!res.ok) throw new Error("فشل تحميل المنتجات");
       return res.json() as Promise<ProductsResponse>; // ✅ Strongly typed
     },
-    initialData,       // ✅ Matches ProductsResponse
+    // initialData,       // ✅ Matches ProductsResponse
     enabled: !!firstRender,
     staleTime: 1000 * 30, // 30 ثانية
     gcTime: 1000 * 60 * 5, // 5 دقائق
