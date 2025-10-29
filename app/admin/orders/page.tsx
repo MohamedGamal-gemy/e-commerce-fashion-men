@@ -5,25 +5,11 @@ import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
 } from "@/components/ui/table";
 import { useAdminOrders } from "./hooks/useAdminOrders";
-// import OrdersAnalytics from "./components/analytics/OrdersAnalytics";
-import OrdersFilters from "./components/OrdersFilters";
-import {
-  parseAsFloat,
-  parseAsInteger,
-  parseAsString,
-  useQueryStates,
-} from "nuqs";
 import OrdersPagination from "./components/OrdersPagination";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TableHeaderForOrders from "./components/table/table-header-for-orders";
 import TableBodyForOrders from "./components/table/table-body-for-orders";
-import OrdersAnalytics from "./components/orders-analytics/OrdersAnalytics";
 
 export default function AdminOrdersPage() {
   const { data, isLoading, isError, updateStatus } = useAdminOrders();
@@ -48,23 +34,6 @@ export default function AdminOrdersPage() {
         {/* <OrdersAnalytics /> */}
       </div>
 
-      {/* 🎛️ Filters Section */}
-      {/* <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <Card className="bg-slate-900/70 border border-slate-700 backdrop-blur-sm shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-slate-200 text-lg flex items-center gap-2">
-              Filters
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <OrdersFilters />
-          </CardContent>
-        </Card>
-      </motion.div> */}
 
       {/* 📋 Orders Table */}
       <motion.div

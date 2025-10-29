@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FilterCheckbox } from "./FilterCheckbox";
 import { LayersIcon } from "lucide-react";
 
@@ -13,7 +13,7 @@ export function FiltersSubcategories({
   selected = [],
   onToggle,
 }: FiltersSubcategoriesProps) {
-  const hasSubcategories =  subcategories?.length > 0;
+  const hasSubcategories = subcategories?.length > 0;
 
   const handleToggle = (value: string) => {
     onToggle?.(value);
@@ -29,30 +29,17 @@ export function FiltersSubcategories({
         </span>
       </div>
 
-      {/* <AnimatePresence> */}
       {hasSubcategories ? (
-        // <motion.div
-        <div
-          className="space-y-2 max-h-80 "
-          // initial={{ opacity: 0 }}
-          // animate={{ opacity: 1 }}
-          // exit={{ opacity: 0 }}
-        >
-          {subcategories.map((subcategory, index) => (
-            <motion.div
-              key={subcategory._id}
-              // initial={{ opacity: 0, y: 10 }}
-              // animate={{ opacity: 1, y: 0 }}
-              // transition={{ delay: index * 0.05 }}
-            >
+        <div className="space-y-2 max-h-80 ">
+          {subcategories.map((subcategory) => (
+            <motion.div key={subcategory._id}>
               <FilterCheckbox
                 id={`subcategory-${subcategory._id}`}
                 label={subcategory.name}
                 checked={selected?.includes(subcategory.name) || false}
-                onCheckedChange={(checked) => {
-                  if (checked !== "indeterminate") {
-                    handleToggle(subcategory.name);
-                  }
+                onCheckedChange={(checked: boolean | "indeterminate") => {
+                  if (checked === "indeterminate") return;
+                  handleToggle(subcategory.name);
                 }}
                 icon={<LayersIcon className="h-4 w-4" />}
               />
@@ -60,15 +47,10 @@ export function FiltersSubcategories({
           ))}
         </div>
       ) : (
-        <motion.p
-          className="text-slate-500 text-sm text-center py-4"
-          // initial={{ opacity: 0 }}
-          // animate={{ opacity: 1 }}
-        >
+        <motion.p className="text-slate-500 text-sm text-center py-4">
           No subcategories available
         </motion.p>
       )}
-      {/* </AnimatePresence> */}
     </div>
   );
 }

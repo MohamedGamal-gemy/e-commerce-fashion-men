@@ -7,7 +7,11 @@ export const LoginSchema = z.object({
 });
 
 export const RegisterSchema = LoginSchema.extend({
-  username: z.string().min(2, "Username must be at least 2 characters"),
+  username: z
+    .string()
+    .min(2, "Username must be at least 2 characters")
+    .optional(),
+  name: z.string().min(2, "Username must be at least 2 characters").optional(),
   //   confirmPassword: z.string().min(6, "Please confirm your password"),
   // }).superRefine((data, ctx) => {
   //   if (data.password !== data.confirmPassword) {

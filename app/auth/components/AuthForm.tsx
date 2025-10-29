@@ -40,7 +40,12 @@ export default function AuthForm({ mode }: { mode: Mode }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {mode === "register" && (
-        <FormField label="Username" error={errors?.username?.message}>
+        <FormField
+          label="Username"
+            error={errors.username?.message ?? errors.name?.message}
+
+          // error={errors?.username?.message || errors?.name?.message}
+        >
           <div className="relative">
             <User
               className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"

@@ -1,9 +1,34 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { currency, formatDate } from "../utilities";
 
-const RevenueTrend = ({ trend }) => {
-  const data = (trend || []).map((r) => ({ ...r, label: formatDate(r._id) }));
+// ✅ نوع البيانات اللي جاية من الـ backend
+type TrendItem = {
+  _id: string;
+  totalRevenue: number;
+};
+
+// ✅ props بتاعة الكومبوننت
+type RevenueTrendProps = {
+  trend?: TrendItem[];
+};
+
+const RevenueTrend = ({ trend = [] }: RevenueTrendProps) => {
+  // ✅ نحول التاريخ إلى label مقروء
+  const data = trend.map((r) => ({
+    ...r,
+    label: formatDate(r._id),
+  }));
 
   return (
     <Card className="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 shadow-xl w-full">
@@ -39,8 +64,8 @@ const RevenueTrend = ({ trend }) => {
                   borderRadius: 8,
                   color: "#e6eef8",
                 }}
-                formatter={(value) => currency(value)}
-                labelFormatter={(label) => `Date: ${label}`}
+                formatter={(value: number) => currency(value)}
+                labelFormatter={(label: string) => `Date: ${label}`}
               />
               <Area
                 type="monotone"
@@ -57,4 +82,4 @@ const RevenueTrend = ({ trend }) => {
   );
 };
 
-export default RevenueTrend
+export default RevenueTrend;

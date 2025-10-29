@@ -11,7 +11,6 @@ interface ProductsQueryParams {
 export function useProductsQuery({
   selectedColors,
   selectedSubcategories,
-  initialData,
   firstRender,
 }: ProductsQueryParams) {
   return useQuery({
@@ -42,75 +41,3 @@ export function useProductsQuery({
     gcTime: 1000 * 60 * 5, // 5 دقايق
   });
 }
-
-// hooks/useProductsQuery.ts
-// import { useQuery } from "@tanstack/react-query";
-// import { productsRepository } from "../repositories/productsRepository";
-// // import { ProductsQueryParams } from "../types";
-
-// export function useProductsQuery({
-//   selectedColors,
-//   selectedSubcategories,
-//   initialData,
-// }) {
-//   return useQuery({
-//     queryKey: ["products", selectedColors, selectedSubcategories],
-//     queryFn: async () => {
-//       const queryParams = new URLSearchParams();
-
-//       if (selectedColors.length > 0) {
-//         queryParams.append("color", selectedColors.join(","));
-//       }
-
-//       if (selectedSubcategories.length > 0) {
-//         queryParams.append("subcategory", selectedSubcategories.join(","));
-//       }
-
-//       return fetch(`http://localhost:9000/api/products/show?${queryParams}`);
-//       // return productsRepository(queryParams.toString());
-//     },
-//     // initialData,
-//     staleTime: 1000 * 30, // 30 seconds
-//     gcTime: 1000 * 60 * 5, // 5 minutes
-//     retry: 2,
-//     refetchOnWindowFocus: false,
-//     placeholderData: (previousData) => previousData,
-//     // ?? initialData,
-//   });
-// }
-
-// import { useQuery } from "@tanstack/react-query";
-// import { productsRepository } from "../repositories/productsRepository";
-
-// export function useProductsQuery({
-//   selectedColors = [],
-//   selectedSubcategories = [],
-//   initialData,
-// }: {
-//   selectedColors?: string[];
-//   selectedSubcategories?: string[];
-//   initialData?: any;
-// }) {
-//   return useQuery({
-//     queryKey: ["products", selectedColors, selectedSubcategories],
-//     queryFn: async () => {
-//       const queryParams = new URLSearchParams();
-
-//       if (selectedColors && selectedColors.length > 0) {
-//         queryParams.append("color", selectedColors.join(","));
-//       }
-
-//       if (selectedSubcategories && selectedSubcategories.length > 0) {
-//         queryParams.append("subcategory", selectedSubcategories.join(","));
-//       }
-
-//       return productsRepository.getAll(queryParams.toString());
-//     },
-//     initialData,
-//     staleTime: 1000 * 30,
-//     gcTime: 1000 * 60 * 5,
-//     retry: 2,
-//     refetchOnWindowFocus: false,
-//     placeholderData: (previousData) => previousData ?? initialData,
-//   });
-// }

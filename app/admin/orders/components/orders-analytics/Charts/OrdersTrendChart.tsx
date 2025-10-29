@@ -1,62 +1,7 @@
-// "use client"
+"use client";
 
-// import {
-//   Card,
-//   CardHeader,
-//   CardTitle,
-//   CardDescription,
-//   CardContent,
-// } from "@/components/ui/card"
-
-// import {
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   Tooltip,
-//   Legend,
-//   ResponsiveContainer,
-// } from "recharts"
-
-// export default function OrdersTrendChart({ data }: { data: any[] }) {
-//   // تحويل البيانات إلى الشكل المطلوب
-//   const formattedData = data.map((item) => {
-//     const base: any = { date: item.date }
-//     item.statuses.forEach((s: any) => {
-//       base[s.status] = s.count
-//     })
-//     return base
-//   })
-
-//   return (
-//     <Card className="bg-slate-900 text-slate-100 border-slate-700">
-//       <CardHeader>
-//         <CardTitle>Orders by Status</CardTitle>
-//         <CardDescription>Orders trend breakdown by status</CardDescription>
-//       </CardHeader>
-
-//       <CardContent>
-//         <ResponsiveContainer width="100%" height={300}>
-//           <BarChart data={formattedData}>
-//             <XAxis dataKey="date" stroke="#CBD5E1" />
-//             <YAxis stroke="#CBD5E1" />
-//             <Tooltip />
-//             <Legend />
-//             <Bar dataKey="pending" stackId="a" fill="#facc15" />
-//             <Bar dataKey="paid" stackId="a" fill="#4ade80" />
-//             <Bar dataKey="cancelled" stackId="a" fill="#f87171" />
-//           </BarChart>
-//         </ResponsiveContainer>
-//       </CardContent>
-//     </Card>
-//   )
-// }
-
-"use client"
-
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-
+import { TrendingUp } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -64,7 +9,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -72,23 +17,42 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
-// تحويل بيانات ordersTrend للداتا المناسبة
-function transformOrdersTrend(data) {
+// ✅ نوع واحد يمثل كل حالة
+type OrderStatusCount = {
+  status: "pending" | "paid" | "cancelled";
+  count: number;
+};
+
+// ✅ نوع يمثل كل يوم (المدخل الأصلي)
+type OrdersTrendInput = {
+  date: string;
+  statuses: OrderStatusCount[];
+};
+
+// ✅ نوع البيانات بعد التحويل (للرسم)
+type OrdersTrendChartData = {
+  date: string;
+  pending?: number;
+  paid?: number;
+  cancelled?: number;
+};
+
+function transformOrdersTrend(data: OrdersTrendInput[]): OrdersTrendChartData[] {
   return data.map(({ date, statuses }) => {
-    const obj = { date }
+    const obj: OrdersTrendChartData = { date };
     statuses.forEach(({ status, count }) => {
-      obj[status] = count
-    })
-    return obj
-  })
+      obj[status] = count;
+    });
+    return obj;
+  });
 }
 
-const chartConfig = {
+const chartConfig: ChartConfig = {
   pending: {
     label: "Pending",
-    color: "var(--chart-1)", // عدل حسب الألوان اللي تناسبك
+    color: "var(--chart-1)",
   },
   paid: {
     label: "Paid",
@@ -98,10 +62,10 @@ const chartConfig = {
     label: "Cancelled",
     color: "var(--chart-3)",
   },
-}
+};
 
-export default function OrdersTrendChart({ data }) {
-  const chartData = transformOrdersTrend(data)
+export default function OrdersTrendChart({ data }: { data: OrdersTrendInput[] }) {
+  const chartData = transformOrdersTrend(data);
 
   return (
     <Card className="bg-slate-900 border border-slate-700 text-slate-100 h-[32rem]">
@@ -109,7 +73,7 @@ export default function OrdersTrendChart({ data }) {
         <CardTitle>Orders Trend</CardTitle>
         <CardDescription>Orders status over time</CardDescription>
       </CardHeader>
-      <CardContent className="">
+      <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart data={chartData} accessibilityLayer>
             <CartesianGrid vertical={false} />
@@ -118,11 +82,11 @@ export default function OrdersTrendChart({ data }) {
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              tickFormatter={(value) => value.slice(5)} // يعرض فقط MM-DD
+              tickFormatter={(value: string) => value.slice(5)} // يعرض فقط MM-DD
             />
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
             <ChartLegend content={<ChartLegendContent />} />
-            
+
             <Bar
               dataKey="pending"
               stackId="a"
@@ -156,5 +120,5 @@ export default function OrdersTrendChart({ data }) {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

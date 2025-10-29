@@ -1,4 +1,3 @@
-import AuthLayout from "../layout";
 import AuthForm from "../components/AuthForm";
 import AuthCard from "../components/AuthCard";
 

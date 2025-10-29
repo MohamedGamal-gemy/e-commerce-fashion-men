@@ -9,12 +9,29 @@ import { ProductSkeleton } from "./ui/ProductSkeleton";
 import { EmptyState } from "./EmptyState";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { useColorFilter } from "../hooks/useColorFilter";
+import type { Product } from "@/types/productList";
+// import type { Color, Subcategory } from "../types";
 
-const ProductList = ({ initialData, subcategories, colors }) => {
+interface ProductListProps {
+  // initialData: ProductsResponse;
+  initialData: any;
+  subcategories: any;
+  colors: any;
+  // subcategories: Subcategory[];
+  // colors: Color[];
+}
+
+export const ProductList: React.FC<ProductListProps> = ({
+  initialData,
+  subcategories,
+  colors,
+}) => {
   const firstRender = useRef(false);
+
   useEffect(() => {
     firstRender.current = true;
   }, []);
+
   const { selectedColors, toggleColor, clearColors } = useColorFilter();
   const { selectedSubcategories, toggleSubcategory, clearSubcategories } =
     useSubcategoryFilter();
@@ -26,7 +43,8 @@ const ProductList = ({ initialData, subcategories, colors }) => {
     firstRender: firstRender.current,
   });
 
-  const products = data?.products || initialData.products;
+  // fallback للبيانات
+  const products: Product[] = data?.products ?? initialData?.products ?? [];
   const hasActiveFilters =
     selectedColors.length > 0 || selectedSubcategories.length > 0;
 
@@ -39,7 +57,7 @@ const ProductList = ({ initialData, subcategories, colors }) => {
     return (
       <div className="flex-1">
         <ErrorDisplay
-          message={error.message}
+          message={error instanceof Error ? error.message : "Unknown error"}
           onRetry={() => window.location.reload()}
         />
       </div>
@@ -47,7 +65,7 @@ const ProductList = ({ initialData, subcategories, colors }) => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 ">
+    <div className="flex flex-col lg:flex-row gap-8">
       {/* Filters Sidebar */}
       <ProductsFilters
         subcategories={subcategories}
@@ -60,13 +78,11 @@ const ProductList = ({ initialData, subcategories, colors }) => {
       />
 
       {/* Products Section */}
-      {/* <div className="max-w-7xl mx-auto"> */}
       <div className="flex-1">
-        {/* Results Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold text-slate-200">
-              Products
+              Products{" "}
               {data?.pagination && (
                 <span className="text-slate-400 text-lg ml-2">
                   ({data.pagination.total})
@@ -87,15 +103,16 @@ const ProductList = ({ initialData, subcategories, colors }) => {
           )}
         </div>
 
-        {/* Products Grid */}
+        {/* Loading Skeleton */}
         {isLoading && (
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3">
             {Array.from({ length: 8 }).map((_, i) => (
               <ProductSkeleton key={i} />
             ))}
           </div>
         )}
 
+        {/* Empty State */}
         {!isLoading && products.length === 0 && (
           <EmptyState
             hasActiveFilters={hasActiveFilters}
@@ -103,41 +120,33 @@ const ProductList = ({ initialData, subcategories, colors }) => {
           />
         )}
 
+        {/* Products Grid */}
         {!isLoading && products.length > 0 && (
-          <div
-            className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3"
-            // layout
-          >
-            {/* <motion.div
-            className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3"
-            layout
-          > */}
-            {/* <AnimatePresence mode="popLayout"> */}
-            {products.map((product) => (
-              // <motion.div
-              <div
-                key={product._id}
-                // layout
-                // initial={{ opacity: 0, scale: 0.9 }}
-                // animate={{ opacity: 1, scale: 1 }}
-                // exit={{ opacity: 0, scale: 0.9 }}
-                // transition={{
-                //   duration: 0.25,
-                //   layout: { duration: 0.25 },
-                // }}
-                // whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              >
-                <ProductCard product={product} />
-              </div>
-              // </motion.div>
-            ))}
-            {/* </AnimatePresence> */}
-            {/* </motion.div> */}
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3">
+            <AnimatePresence mode="popLayout">
+              {products.map((product) =>
+                product ? (
+                  <motion.div
+                    key={product._id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{
+                      duration: 0.25,
+                      layout: { duration: 0.25 },
+                    }}
+                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
+                ) : null
+              )}
+            </AnimatePresence>
           </div>
         )}
       </div>
     </div>
-    // </div>
   );
 };
 

@@ -14,7 +14,6 @@ export default async function ProductsPage() {
     return (
       <main className="min-h-screen bg-gradient-to-br from-slate-950
        via-slate-900 to-slate-950 py-8 px- sm:px-6 lg:px-">
-        {/* <div className="max-w-7xl mx-auto"> */}
         {/* Page Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 

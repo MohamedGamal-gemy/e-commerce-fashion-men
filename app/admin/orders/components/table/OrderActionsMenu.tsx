@@ -9,10 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 
 export function OrderActionsMenu({
-  orderId,
   onChange,
 }: {
-  orderId: string;
+  orderId?: string;
   onChange: (status: string) => void;
 }) {
   const statuses = ["pending", "paid", "shipped", "delivered", "cancelled"];

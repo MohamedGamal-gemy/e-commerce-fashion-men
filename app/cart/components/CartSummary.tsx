@@ -5,8 +5,11 @@ export default function CartSummary({
   subtotal = 0,
   shipping = 0,
   discount = 0,
-  // items,
-  // sessionId,
+}: 
+{
+  subtotal: number;
+  shipping?: number;
+  discount?: number;
 }) {
   const total = subtotal + shipping - discount;
 

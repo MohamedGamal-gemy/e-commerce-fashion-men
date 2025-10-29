@@ -1,11 +1,27 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { currency } from "../utilities";
 
-const TopProductsList = ({ products }) => {
-  const totalMax = Math.max(
-    1,
-    ...(products || []).map((p) => p.totalRevenue || 0)
-  );
+// ✅ تعريف نوع المنتج الواحد
+type ProductItem = {
+  _id: string;
+  name: string;
+  totalRevenue: number;
+  totalSold: number;
+  image?: {
+    url: string;
+  };
+};
+
+// ✅ تعريف props
+type TopProductsListProps = {
+  products?: ProductItem[];
+};
+
+const TopProductsList = ({ products = [] }: TopProductsListProps) => {
+  // ✅ نحسب الماكس بطريقة آمنة
+  const totalMax = Math.max(1, ...products.map((p) => p.totalRevenue || 0));
 
   return (
     <Card className="bg-slate-900/60 border border-slate-800 shadow">
@@ -14,7 +30,7 @@ const TopProductsList = ({ products }) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {(products || []).map((p, idx) => (
+          {products.map((p) => (
             <div
               key={p._id}
               className="flex items-center justify-between gap-4"
@@ -34,6 +50,8 @@ const TopProductsList = ({ products }) => {
                   </div>
                 </div>
               </div>
+
+              {/* ✅ progress bar */}
               <div className="w-32">
                 <div className="h-2 bg-slate-800 rounded overflow-hidden">
                   <div
@@ -53,4 +71,5 @@ const TopProductsList = ({ products }) => {
     </Card>
   );
 };
-export default TopProductsList
+
+export default TopProductsList;

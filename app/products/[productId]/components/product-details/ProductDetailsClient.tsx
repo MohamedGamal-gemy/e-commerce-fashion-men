@@ -1,18 +1,17 @@
-// src/components/product-details/ClientProductDetails.tsx
 "use client";
 
 import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { Product } from "@/types/product";
-import { Card } from "@/components/ui/card";
 import ProductGallery from "./ProductGallery";
 import ProductSummary from "../ProductSummary";
 import { ProductReviews } from "../reviews/ProductReviews";
 
 interface Props {
   product: Product;
+  sessionId: string | null;
 }
 
-export default function ClientProductDetails({ product,sessionId }: Props) {
+export default function ClientProductDetails({ product, sessionId }: Props) {
   // Selected variant id, size and active image index
   const [activeVariantId, setActiveVariantId] = useState<string | null>(null);
   const [activeSize, setActiveSize] = useState<string | null>(null);
@@ -84,7 +83,7 @@ export default function ClientProductDetails({ product,sessionId }: Props) {
           sessionId={sessionId}
         />
       </aside>
-      <ProductReviews productId={product._id}  />
+      <ProductReviews productId={product._id} />
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import { memo, useMemo } from "react";
-import { motion } from "framer-motion";
 import { FiltersHeader } from "./FiltersHeader";
 import { FiltersSubcategories } from "./FiltersSubcategories";
 import { FiltersColors } from "./FiltersColors";
@@ -36,10 +35,6 @@ function ProductsFiltersComponent({
     <div
       className="w-60 sticky top-6
        space-y-6 p-6 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 shadow-xl"
-      // <motion.div
-      // initial={{ opacity: 0, x: -20 }}
-      // animate={{ opacity: 1, x: 0 }}
-      // transition={{ duration: 0.5 }}
     >
       <FiltersHeader
         selectedCount={totalSelected}
@@ -59,7 +54,6 @@ function ProductsFiltersComponent({
           onToggle={onToggleColor}
         />
       </div>
-      {/* </motion.div> */}
     </div>
   );
 }

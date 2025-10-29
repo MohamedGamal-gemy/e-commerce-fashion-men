@@ -19,10 +19,29 @@ function formatDate(date: string) {
   });
 }
 
-const OrdersByStatus = ({ ordersTrend = [] }) => {
+// ✅ أولاً: عرف نوع البيانات اللي بتيجي في props
+interface OrderStatus {
+  status: string;
+  count: number;
+}
+
+interface OrdersTrendItem {
+  date: string;
+  statuses: OrderStatus[];
+}
+
+// ✅ ثانيًا: عرّف نوع الـ props
+interface OrdersByStatusProps {
+  ordersTrend?: OrdersTrendItem[];
+}
+
+const OrdersByStatus: React.FC<OrdersByStatusProps> = ({
+  ordersTrend = [],
+}) => {
   const normalized = ordersTrend.map((d) => {
-    const obj: any = { date: formatDate(d.date) };
-    (d.statuses || []).forEach((s: any) => {
+    // هنا TypeScript هيعرف إن d من نوع OrdersTrendItem
+    const obj: Record<string, any> = { date: formatDate(d.date) };
+    (d.statuses || []).forEach((s) => {
       obj[s.status] = s.count;
     });
     obj.paid = obj.paid || 0;
@@ -50,7 +69,7 @@ const OrdersByStatus = ({ ordersTrend = [] }) => {
               <BarChart
                 data={normalized}
                 margin={{ top: 10, right: 15, left: -5, bottom: 5 }}
-                barSize={40} 
+                barSize={40}
               >
                 <defs>
                   <linearGradient id="paidGradient" x1="0" y1="0" x2="0" y2="1">
@@ -86,7 +105,7 @@ const OrdersByStatus = ({ ordersTrend = [] }) => {
                   tickLine={false}
                 />
                 <Tooltip
-                  cursor={{ fill: "rgba(255,255,255,0.02)" }} // 👈 خلفية hover شفافة جدًا
+                  cursor={{ fill: "rgba(255,255,255,0.02)" }}
                   contentStyle={{
                     backgroundColor: "rgba(15,23,42,0.85)",
                     border: "1px solid rgba(51,65,85,0.7)",
@@ -97,14 +116,12 @@ const OrdersByStatus = ({ ordersTrend = [] }) => {
                 />
                 <Legend wrapperStyle={{ color: "#94a3b8", fontSize: "12px" }} />
 
-                {/* Bars without hover color */}
                 <Bar
                   dataKey="paid"
                   stackId="a"
                   fill="url(#paidGradient)"
                   radius={[4, 4, 0, 0]}
                   isAnimationActive={false}
-                  activeBar={false}
                 />
                 <Bar
                   dataKey="pending"
@@ -112,7 +129,6 @@ const OrdersByStatus = ({ ordersTrend = [] }) => {
                   fill="url(#pendingGradient)"
                   radius={[4, 4, 0, 0]}
                   isAnimationActive={false}
-                  activeBar={false}
                 />
                 <Bar
                   dataKey="cancelled"
@@ -120,7 +136,6 @@ const OrdersByStatus = ({ ordersTrend = [] }) => {
                   fill="url(#cancelledGradient)"
                   radius={[4, 4, 0, 0]}
                   isAnimationActive={false}
-                  activeBar={false}
                 />
               </BarChart>
             </ResponsiveContainer>

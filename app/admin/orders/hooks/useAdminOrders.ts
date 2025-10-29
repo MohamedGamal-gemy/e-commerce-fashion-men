@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { parseAsFloat, parseAsInteger, parseAsString, useQueryStates } from "nuqs";
+import {
+  parseAsFloat,
+  parseAsInteger,
+  parseAsString,
+  useQueryStates,
+} from "nuqs";
 import { toast } from "sonner";
 
 function useDebounce<T>(value: T, delay: number): T {
@@ -20,11 +25,15 @@ function useDebounce<T>(value: T, delay: number): T {
 async function getOrders(debouncedFilters: Record<string, any>) {
   const params = new URLSearchParams(
     Object.fromEntries(
-      Object.entries(debouncedFilters).filter(([_, v]) => v !== "" && v !== "all")
+      Object.entries(debouncedFilters).filter(
+        ([_, v]) => v !== "" && v !== "all"
+      )
     )
   ).toString();
 
-  const res = await fetch(`http://localhost:9000/api/checkout/admin/orders?${params}`);
+  const res = await fetch(
+    `http://localhost:9000/api/checkout/admin/orders?${params}`
+  );
   if (!res.ok) throw new Error("Failed to fetch orders");
   return res.json();
 }
@@ -51,8 +60,8 @@ export function useAdminOrders() {
     status: parseAsString.withDefault("all"),
     from: parseAsString.withDefault(""),
     to: parseAsString.withDefault(""),
-    minTotal: parseAsFloat.withDefault(""),
-    maxTotal: parseAsFloat.withDefault(""),
+    minTotal: parseAsFloat,
+    maxTotal: parseAsFloat,
     page: parseAsInteger.withDefault(1),
   });
 

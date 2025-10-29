@@ -1,8 +1,7 @@
 "use client";
 
 import { Review } from "@/types/review";
-import { Star, User } from "lucide-react";
-// import { Review } from "@/types/review";
+import { Star } from "lucide-react";
 
 export function ReviewItem({ review }: { review: Review }) {
   return (

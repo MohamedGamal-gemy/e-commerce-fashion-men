@@ -9,7 +9,7 @@ import type { Product, Variant } from "@/types/product";
 import VariantSelector from "./product-details/VariantSelector";
 import SizeSelector from "./product-details/SizeSelector";
 import { toast } from "sonner";
-import { useAddToCart } from "@/app/cart/store/cart";
+import { AddToCartInput, useAddToCart } from "@/app/cart/store/cart";
 
 export default function ProductSummary({
   product,
@@ -22,8 +22,9 @@ export default function ProductSummary({
 }: {
   product: Product;
   activeVariant: Variant;
-  activeSize: string | null;
+  activeSize: string;
   selectedStock: number;
+  sessionId: string | null;
   onSelectVariant: (variantId: string) => void;
   onSelectSize: (size: string) => void;
 }) {
@@ -35,15 +36,13 @@ export default function ProductSummary({
   const { addToCart, isAdding } = useAddToCart();
 
   const handleAddToCart = async () => {
-    const payload = {
+    const payload: AddToCartInput = {
       productId: product._id,
-      variantId: activeVariant?._id,
-      size: activeSize,
+      variantId: activeVariant?._id!,
+      size: activeSize!,
       quantity: qty,
-      sessionId, // لازم تبعته عشان الكارت يتربط بالمستخدم
+      sessionId: sessionId as string,
     };
-
-    console.log("Add to cart payload:", payload);
 
     // استدعاء الميوتاشن من React Query
     addToCart(payload, {

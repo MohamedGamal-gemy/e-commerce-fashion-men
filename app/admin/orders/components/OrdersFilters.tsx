@@ -30,12 +30,12 @@ export default function OrdersFilters() {
 
   const [minTotal, setMinTotal] = useQueryState(
     "minTotal",
-    parseAsFloat.withDefault("")
+    parseAsFloat
   );
 
   const [maxTotal, setMaxTotal] = useQueryState(
     "maxTotal",
-    parseAsFloat.withDefault("")
+    parseAsFloat
   );
 
   const resetFilters = () => {

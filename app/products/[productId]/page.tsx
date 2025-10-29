@@ -1,4 +1,4 @@
-// src/app/products/[id]/page.tsx
+// src/app/products/[productId]/page.tsx
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { Product } from "@/types/product";
@@ -6,23 +6,30 @@ import { fetchProduct } from "./services/productService";
 import ClientProductDetails from "./components/product-details/ProductDetailsClient";
 import { getSessionId } from "@/app/cart/lib/getCart";
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const product = await fetchProduct(params.id).catch(() => null);
+// ✅ استخدم النوع الصحيح القادم من Next
+type PageProps = {
+  params: Promise<{ productId: string }>; // <-- لاحظ هنا Promise
+};
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { productId } = await params; // ✅ لازم await
+  const product = await fetchProduct(productId).catch(() => null);
   return {
     title: product ? `${product.title} • My Store` : "Product",
   };
 }
 
-export default async function Page({ params }: { params: { productId: string } }) {
-  const product: Product | null = await fetchProduct(params.productId).catch(() => null);
+export default async function Page({ params }: PageProps) {
+  const { productId } = await params; // ✅ نفس الشيء هنا
+  const product: Product | null = await fetchProduct(productId).catch(() => null);
   if (!product) return notFound();
 
-  const sessionId =await getSessionId();
-  // Pass product as prop to client component (serialized)
+  const sessionId = await getSessionId();
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ClientProductDetails product={product} sessionId={sessionId}/>
+        <ClientProductDetails product={product} sessionId={sessionId} />
       </div>
     </main>
   );

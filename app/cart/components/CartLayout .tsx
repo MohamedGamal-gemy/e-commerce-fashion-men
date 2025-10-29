@@ -17,7 +17,9 @@ const CartLayout = ({
     <div className="min-h-screen p-4 sm:p-8 relative">
       {/* <EffectLightBackground /> */}
       <div className="max-w-6xl mx-auto space-y-8">
-        <CartHeader itemCount={cart?.totalItems} />
+        {/* <CartHeader itemCount={cart?.totalItems} /> */}
+        <CartHeader itemsCount={cart?.totalItems} />
+
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <CartList
@@ -25,7 +27,8 @@ const CartLayout = ({
             page={page}
             onPageChange={onPageChange}
           />
-          <CartSummary total={total} itemCount={cart?.totalItems} />
+          {/* <CartSummary total={total} itemCount={cart?.totalItems} /> */}
+<CartSummary subtotal={total} />
         </div>
       </div>
     </div>

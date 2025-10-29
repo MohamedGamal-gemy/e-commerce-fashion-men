@@ -4,7 +4,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 
-const useCheckout = ({ sessionId, userId = null }) => {
+const useCheckout = ({
+  sessionId,
+  userId = null,
+}: {
+  sessionId?: string | null;
+  userId?: string | null;
+}) => {
   const checkoutSchema = z.object({
     fullName: z.string().min(2, "Full name is required"),
     email: z.string().email("Invalid email"),
