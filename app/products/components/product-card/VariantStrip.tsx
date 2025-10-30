@@ -10,21 +10,29 @@ interface VariantStripProps {
   onHoverStart?: () => void;
 }
 
-export function VariantStrip({ variants, activeIndex, onSelect, onHoverStart }: VariantStripProps) {
+export function VariantStrip({
+  variants,
+  activeIndex,
+  onSelect,
+  onHoverStart,
+}: VariantStripProps) {
   return (
     <div
       onMouseEnter={onHoverStart}
-      className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 
-      bg-slate-950/60 backdrop-blur-sm px-3 py-2 rounded-full border border-slate-800 shadow-sm"
+      //   className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2
+      //   bg-slate-950/60 backdrop-blur-sm px-3 py-2 rounded-full border border-slate-800 shadow-sm"
+      // >
+      className="flex items-center gap-3 
+        rounded-full  shadow-sm"
     >
       {variants.map((v, i) => (
         <button
           key={v._id}
           onClick={(e) => onSelect(i, e)}
-          className={`relative w-9 h-9 rounded-full overflow-hidden transition-all duration-300 ${
+          className={`relative w-7 h-7 rounded-full overflow-hidden transition-all duration-300 ${
             activeIndex === i
-              ? "ring-2 ring-sky-500 ring-offset-2 ring-offset-slate-900 shadow-sm"
-              : "opacity-80 hover:opacity-100 hover:ring-1 hover:ring-slate-700"
+              ? "ring-1 ring-sky-500  shadow-sm"
+              : "  "
           }`}
         >
           <Image
@@ -38,5 +46,3 @@ export function VariantStrip({ variants, activeIndex, onSelect, onHoverStart }: 
     </div>
   );
 }
-
-

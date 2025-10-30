@@ -71,7 +71,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
+    <div className="flex gap-5 items-start">
       {/* Filters Sidebar */}
       <ProductsFilters
         subcategories={subcategories}
@@ -84,7 +84,7 @@ export const ProductList: React.FC<ProductListProps> = ({
       />
 
       {/* Products Section */}
-      <div className="flex-1">
+      <div className="flex-1 mt-10 mr-6">
         <div className="flex items-center justify-between mb-3">
 
 

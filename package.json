@@ -1,8 +1,7 @@
 {
-  "name": "admin",
+  "name": "fashion-e-commerce",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack --port 5000",
     "build": "next build",

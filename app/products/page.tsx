@@ -13,7 +13,9 @@ export default async function ProductsPage() {
     ]);
 
     return (
-      <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-8 px-4 sm:px-6 lg:px-8">
+      <main className="min-h-screen bg-gradient-to-tl to-gray-800
+           via-black/80
+           from-gray-800 py-8 px-4 sm:px-6 lg:px-">
         <ProductsSection initialData={data} colors={colors} subcategories={subcategories} />
         <Pagination totalPages={data?.pagination?.totalPages} />
       </main>
