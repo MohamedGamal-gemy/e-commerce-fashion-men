@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import AdminOrdersClient from "./AdminOrdersClient";
-// import AdminOrdersClient from "./AdminOrdersClient";
 
 export default function AdminOrdersPage() {
   return (

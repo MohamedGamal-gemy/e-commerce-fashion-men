@@ -1,18 +1,22 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
 import React, { memo, useEffect, useRef } from "react";
 import { useProductsQuery } from "../hooks/useProductsQuery";
 import { useSubcategoryFilter } from "../hooks/useSubcategoryFilter";
-import { ProductCard } from "./ProductCard";
 import { ProductsFilters } from "./filters/ProductsFilters";
-import { ProductSkeleton } from "./ui/ProductSkeleton";
-import { EmptyState } from "./EmptyState";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { useColorFilter } from "../hooks/useColorFilter";
 // import type {  Product } from "@/types/product";
 import { Product, ProductsResponse } from "@/types/productList";
 import { Color, Subcategory } from "@/types/filter";
+import Header from "./product-list/Header";
+import UpdatingIndicator from "./product-list/UpdatingIndicator";
+import LoadingState from "./product-list/LoadingState";
+import ProductsGrid from "./product-list/ProductsGrid";
+import EmptyResults from "./product-list/EmptyResults";
+import FiltersSort from "./filters/FiltersSort";
+import FiltersSearch from "./filters/FiltersSearch";
+import { useSearchQueryHook } from "../hooks/useSearchQueryHook";
 
 // Optional: if you have these defined elsewhere, import them instead
 
@@ -29,11 +33,11 @@ export const ProductList: React.FC<ProductListProps> = ({
   colors,
 }) => {
   const firstRender = useRef(false);
-
   useEffect(() => {
     firstRender.current = true;
   }, []);
 
+  const { sort, setSort, search, setSearch } = useSearchQueryHook()
   const { selectedColors, toggleColor, clearColors } = useColorFilter();
   const { selectedSubcategories, toggleSubcategory, clearSubcategories } =
     useSubcategoryFilter();
@@ -41,7 +45,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   const { data, isLoading, error, isFetching } = useProductsQuery({
     selectedColors,
     selectedSubcategories,
-    // initialData,
+    sort, search,
     firstRender: firstRender.current,
   });
 
@@ -81,70 +85,31 @@ export const ProductList: React.FC<ProductListProps> = ({
 
       {/* Products Section */}
       <div className="flex-1">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-200">
-              Products{" "}
-              {data?.pagination && (
-                <span className="text-slate-400 text-lg ml-2">
-                  ({data.pagination.total})
-                </span>
-              )}
-            </h2>
+        <div className="flex items-center justify-between mb-3">
 
-            {hasActiveFilters && (
-              <p className="text-slate-400 text-sm mt-1">Filtered results</p>
-            )}
-          </div>
 
-          {isFetching && !isLoading && (
-            <div className="flex items-center gap-2 text-slate-400">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-              <span className="text-sm">Updating...</span>
-            </div>
-          )}
+          <FiltersSearch search={search} setSearch={setSearch} />
+          <FiltersSort sort={sort} setSort={setSort} />
+
+        </div>
+
+        <div className="flex items-center justify-between -mb-4">
+          <Header total={data?.pagination?.total} hasActiveFilters={hasActiveFilters} />
+          <UpdatingIndicator show={isFetching && !isLoading} />
         </div>
 
         {/* Loading Skeleton */}
-        {isLoading && (
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <ProductSkeleton key={i} />
-            ))}
-          </div>
-        )}
+        <LoadingState show={isLoading} />
 
         {/* Empty State */}
-        {!isLoading && products.length === 0 && (
-          <EmptyState
-            hasActiveFilters={hasActiveFilters}
-            onClearFilters={handleClearAllFilters}
-          />
-        )}
+        <EmptyResults
+          show={!isLoading && products.length === 0}
+          hasActiveFilters={hasActiveFilters}
+          onClearFilters={handleClearAllFilters}
+        />
 
         {/* Products Grid */}
-        {!isLoading && products.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3">
-            <AnimatePresence mode="popLayout">
-              {products.map((product) => (
-                <motion.div
-                  key={product._id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{
-                    duration: 0.25,
-                    layout: { duration: 0.25 },
-                  }}
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        )}
+        {!isLoading && products.length > 0 && <ProductsGrid products={products} />}
       </div>
     </div>
   );

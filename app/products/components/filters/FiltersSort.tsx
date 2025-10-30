@@ -7,24 +7,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowUpDown } from "lucide-react";
 
 interface FiltersSortProps {
-  sort?: "latest" | "price_asc" | "price_desc" | "top_rated";
-  onChange: (value: "latest" | "price_asc" | "price_desc" | "top_rated") => void;
+  sort?: string
+  setSort: (value: "latest" | "price_asc" | "price_desc" | "top_rated") => void;
 }
 
-export default function FiltersSort({ sort, onChange }: FiltersSortProps) {
+export default function FiltersSort({ sort, setSort }: FiltersSortProps) {
   return (
-    <div className="space-y-2">
-      <label className="text-slate-300 text-sm font-medium flex items-center gap-2">
-        <ArrowUpDown className="h-4 w-4 text-sky-400" /> Sort by
-      </label>
+    <div className="space-y-2 w-40">
 
       <Select
         value={sort || "latest"}
         onValueChange={(v) =>
-          onChange(v as "latest" | "price_asc" | "price_desc" | "top_rated")
+          setSort(v as "latest" | "price_asc" | "price_desc" | "top_rated")
         }
       >
         <SelectTrigger className="w-full bg-slate-800 border-slate-700 text-slate-200">

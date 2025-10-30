@@ -20,7 +20,7 @@
 //   );
 // }
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 
 interface FiltersHeaderProps {
@@ -32,6 +32,7 @@ export function FiltersHeader({
   selectedCount,
   onClearAll,
 }: FiltersHeaderProps) {
+  const shouldReduceMotion = useReducedMotion();
   return (
     <div className="flex items-center justify-between pb-4 border-b border-slate-700">
       <div className="flex items-center gap-2">
@@ -39,10 +40,11 @@ export function FiltersHeader({
         <AnimatePresence>
           {selectedCount > 0 && (
             <motion.span
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
+              initial={shouldReduceMotion ? undefined : { scale: 0, opacity: 0 }}
+              animate={shouldReduceMotion ? undefined : { scale: 1, opacity: 1 }}
+              exit={shouldReduceMotion ? undefined : { scale: 0, opacity: 0 }}
               className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full"
+              aria-live="polite"
             >
               {selectedCount}
             </motion.span>
@@ -53,11 +55,12 @@ export function FiltersHeader({
       <AnimatePresence>
         {selectedCount > 0 && (
           <motion.button
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 10 }}
+            initial={shouldReduceMotion ? undefined : { opacity: 0, x: 10 }}
+            animate={shouldReduceMotion ? undefined : { opacity: 1, x: 0 }}
+            exit={shouldReduceMotion ? undefined : { opacity: 0, x: 10 }}
             onClick={onClearAll}
-            className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+            className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 rounded"
+            aria-label="Clear all selected filters"
           >
             <X className="h-4 w-4" />
             Clear All

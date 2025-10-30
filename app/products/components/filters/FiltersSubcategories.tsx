@@ -24,19 +24,19 @@ export function FiltersSubcategories({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-slate-500/10 p-4 rounded-md border border-slate-500/40" role="group" aria-labelledby="filters-subcategories-label">
       <div className="flex items-center gap-2">
         <LayersIcon className="h-5 w-5 text-blue-400" />
-        <h4 className="text-slate-300 text-sm font-semibold">Subcategories</h4>
+        <h4 id="filters-subcategories-label" className="text-slate-300 text-sm font-semibold">Subcategories</h4>
         <span className="text-slate-500 text-sm">
           ({subcategories.length})
         </span>
       </div>
 
       {hasSubcategories ? (
-        <div className="space-y-2 max-h-80">
+        <div className="space-y-2 max-h-80  ">
           {subcategories.map((subcategory) => (
-            <motion.div key={subcategory._id}>
+            <motion.div key={subcategory._id} >
               <FilterCheckbox
                 id={`subcategory-${subcategory._id}`}
                 label={subcategory.name}

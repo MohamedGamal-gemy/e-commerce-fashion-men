@@ -4,6 +4,7 @@ import { memo, useMemo } from "react";
 import { FiltersHeader } from "./FiltersHeader";
 import { FiltersSubcategories } from "./FiltersSubcategories";
 import { FiltersColors } from "./FiltersColors";
+import FiltersContainer from "./FiltersContainer";
 import { Color, Subcategory } from "@/types/filter";
 
 
@@ -36,29 +37,27 @@ function ProductsFiltersComponent({
   };
 
   return (
-    <div
-      className="w-60 sticky top-6
-       space-y-6 p-6 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 shadow-xl"
-    >
-      <FiltersHeader
-        selectedCount={totalSelected}
-        onClearAll={handleClearAll}
-      />
 
-      <div className="space-y-6">
-        <FiltersSubcategories
-          subcategories={subcategories}
-          selected={selectedSubcategories}
-          onToggle={onToggleSubcategory}
+      <FiltersContainer >
+        <FiltersHeader
+          selectedCount={totalSelected}
+          onClearAll={handleClearAll}
         />
 
-        <FiltersColors
-          colors={colors}
-          selected={selectedColors}
-          onToggle={onToggleColor}
-        />
-      </div>
-    </div>
+        <div className="space-y-6">
+          <FiltersSubcategories
+            subcategories={subcategories}
+            selected={selectedSubcategories}
+            onToggle={onToggleSubcategory}
+          />
+
+          <FiltersColors
+            colors={colors}
+            selected={selectedColors}
+            onToggle={onToggleColor}
+          />
+        </div>
+      </FiltersContainer>
   );
 }
 

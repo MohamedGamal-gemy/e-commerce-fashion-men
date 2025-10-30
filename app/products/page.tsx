@@ -1,10 +1,8 @@
 export const dynamic = "force-dynamic";
 
-import { Suspense } from "react";
 import { productsRepository } from "./repositories/productsRepository";
-import OrdersPagination from "../admin/orders/components/OrdersPagination";
 import { ErrorDisplay } from "./components/ErrorDisplay";
-import ProductList from "./components/ProductList";
+import { ProductsSection, Pagination } from "./components/products-page";
 
 export default async function ProductsPage() {
   try {
@@ -16,31 +14,8 @@ export default async function ProductsPage() {
 
     return (
       <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-8 px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-4">
-            Our Collection
-          </h1>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Discover amazing products tailored just for you
-          </p>
-        </div>
-
-        {/* Product List */}
-        <Suspense fallback={<div>Loading...</div>}>
-          <ProductList
-            initialData={data}
-            colors={colors}
-            subcategories={subcategories}
-          />
-        </Suspense>
-
-        {/* Pagination */}
-        {data?.pagination && data.pagination.totalPages > 1 && (
-          <div className="mt-12 flex justify-center">
-            <OrdersPagination totalPages={data.pagination.totalPages} />
-          </div>
-        )}
+        <ProductsSection initialData={data} colors={colors} subcategories={subcategories} />
+        <Pagination totalPages={data?.pagination?.totalPages} />
       </main>
     );
   } catch (error) {
