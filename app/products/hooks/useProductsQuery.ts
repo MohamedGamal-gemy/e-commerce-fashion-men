@@ -1,9 +1,7 @@
-// import { useQuery } from "@tanstack/react-query";
-// import { arrayToString } from "./useFilterArray";
-import { ProductsResponse } from "@/types/productList";
 import { useQuery } from "@tanstack/react-query";
 import { arrayToString } from "./useFilterArray";
-// // import type { ProductsResponse } from "@/types/product";
+import { ProductsResponse } from "@/types/productList";
+// import type { ProductsResponse } from "@/types/product";
 
 interface ProductsQueryParams {
   selectedColors: string[];
@@ -14,40 +12,42 @@ interface ProductsQueryParams {
   search: string       // ✅ lowercase boolean
 }
 
-
-
-
 export function useProductsQuery({
   selectedColors,
   selectedSubcategories,
-  firstRender,
+  // initialData,
   sort,
   search,
+  firstRender,
 }: ProductsQueryParams) {
   return useQuery<ProductsResponse>({
-    queryKey: ["products", selectedColors, selectedSubcategories, search, sort],
+    queryKey: ["products", selectedColors, selectedSubcategories, sort, search],
     queryFn: async () => {
-      const params = new URLSearchParams();
       const colorQuery = selectedColors.length
         ? `color=${arrayToString(selectedColors)}`
         : "";
       const subcategoryQuery = selectedSubcategories.length
         ? `subcategory=${arrayToString(selectedSubcategories)}`
         : "";
+      const sortquery = sort.length ? `sort=${sort}` : "latest"
+      const searchquery = search.length ? `search=${search}` : ""
+      const queryParams = [colorQuery, subcategoryQuery, sortquery, searchquery]
+        .filter(Boolean)
+        .join("&");
 
-      if (colorQuery) params.append("color", colorQuery);
-      if (subcategoryQuery) params.append("subcategory", subcategoryQuery);
-      if (search) params.append("search", search);
-      if (sort) params.append("sort", sort);
-
-      const url = `http://localhost:9000/api/products/show?${params.toString()}`;
+      const url = queryParams
+        ? `http://localhost:9000/api/products/show?${queryParams}`
+        : "http://localhost:9000/api/products/show";
 
       const res = await fetch(url);
       if (!res.ok) throw new Error("فشل تحميل المنتجات");
-      return res.json() as Promise<ProductsResponse>;
+      return res.json() as Promise<ProductsResponse>; // ✅ Strongly typed
     },
+    // initialData,       // ✅ Matches ProductsResponse
     enabled: !!firstRender,
-    staleTime: 30_000,
-    gcTime: 300_000,
+    staleTime: 1000 * 30, // 30 ثانية
+    gcTime: 1000 * 60 * 5, // 5 دقائق
   });
 }
+
+
