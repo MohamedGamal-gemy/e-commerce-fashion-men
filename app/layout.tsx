@@ -30,11 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <MainHeader/>
+        <MainHeader />
 
-          <ProviderStore>
-            <NuqsAdapter>{children}</NuqsAdapter>
-          </ProviderStore>
+        <ProviderStore>
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </ProviderStore>
       </body>
     </html>
   );

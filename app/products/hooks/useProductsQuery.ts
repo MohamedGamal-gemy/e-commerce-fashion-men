@@ -2,6 +2,7 @@
 // import { arrayToString } from "./useFilterArray";
 import { ProductsResponse } from "@/types/productList";
 import { useQuery } from "@tanstack/react-query";
+import { arrayToString } from "./useFilterArray";
 // // import type { ProductsResponse } from "@/types/product";
 
 interface ProductsQueryParams {
@@ -12,6 +13,8 @@ interface ProductsQueryParams {
   sort: string;
   search: string       // ✅ lowercase boolean
 }
+
+
 
 
 export function useProductsQuery({
@@ -25,9 +28,15 @@ export function useProductsQuery({
     queryKey: ["products", selectedColors, selectedSubcategories, search, sort],
     queryFn: async () => {
       const params = new URLSearchParams();
+      const colorQuery = selectedColors.length
+        ? `color=${arrayToString(selectedColors)}`
+        : "";
+      const subcategoryQuery = selectedSubcategories.length
+        ? `subcategory=${arrayToString(selectedSubcategories)}`
+        : "";
 
-      selectedColors.forEach(c => params.append("color", c));
-      selectedSubcategories.forEach(s => params.append("subcategory", s));
+      if (colorQuery) params.append("color", colorQuery);
+      if (subcategoryQuery) params.append("subcategory", subcategoryQuery);
       if (search) params.append("search", search);
       if (sort) params.append("sort", sort);
 

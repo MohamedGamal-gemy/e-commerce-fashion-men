@@ -1,24 +1,3 @@
-// import { RotateCcw, Filter } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-
-// export default function FiltersHeader({ onClear }: { onClear: () => void }) {
-//   return (
-//     <div className="flex items-center justify-between">
-//       <h3 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
-//         <Filter className="w-5 h-5 text-sky-400" />
-//         Filters
-//       </h3>
-//       <Button
-//         size="sm"
-//         variant="ghost"
-//         onClick={onClear}
-//         className="text-slate-400 hover:text-sky-400"
-//       >
-//         <RotateCcw className="w-4 h-4 mr-1" /> Reset
-//       </Button>
-//     </div>
-//   );
-// }
 
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";

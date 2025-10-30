@@ -7,5 +7,5 @@ export const useSearchQueryHook = () => {
     const [search, setSearch] = useQueryState("search", {
         defaultValue: ""
     })
-    return { sort, setSort,search,setSearch }
+    return { sort, setSort, search, setSearch }
 }
