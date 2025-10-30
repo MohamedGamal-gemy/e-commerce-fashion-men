@@ -1,9 +1,9 @@
 import CartPageClient from "./components/CartPageClient";
-import { getCart, getSessionId } from "./lib/getCart";
+import { getCart } from "./lib/getCart";
 
 const CartPage = async () => {
-  const sessionId =await getSessionId();
   const cart = await getCart();
+  const sessionId = cart.sessionId || null;
 
   return (
     <div className="container mx-auto mt-10">

@@ -34,7 +34,7 @@ export default function ClientProductDetails({ product, sessionId }: Props) {
   }, [product.variants, activeVariantId]);
 
   // when variant changes update image index and size
-  useEffect(() => {
+  useEffect(() => { 
     setActiveImageIndex(0);
     setActiveSize(activeVariant?.sizes?.[0]?.size ?? null);
   }, [activeVariantId, activeVariant]);

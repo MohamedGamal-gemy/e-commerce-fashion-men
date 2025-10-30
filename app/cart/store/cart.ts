@@ -13,6 +13,7 @@ export interface ApiResponse<T = unknown> {
   message?: string;
   error?: string;
   cart?: T;
+  sessionId?: string;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -26,6 +27,7 @@ async function apiRequest<T = unknown>(
   try {
     const res = await fetch(url, {
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       ...options,
     });
 
@@ -64,28 +66,31 @@ const emptyCart: Cart = {
 };
 
 const fetchCart = async (sessionId: string | null): Promise<Cart> => {
-  if (!sessionId) return emptyCart;
-
   try {
-    const url = `http://localhost:9000/api/cart?sessionId=${encodeURIComponent(sessionId)}`;
+    const url = sessionId
+      ? `http://localhost:9000/api/cart?sessionId=${encodeURIComponent(sessionId)}`
+      : `http://localhost:9000/api/cart`;
+
     const data = await apiRequest<ApiResponse<Cart>>(url);
-    return data?.cart || emptyCart;
+    const cartData = data?.cart || emptyCart;
+    const ensuredSessionId = data?.sessionId || sessionId || "";
+    return { ...cartData, sessionId: ensuredSessionId };
   } catch (err: unknown) {
     if (err instanceof Error) console.error("❌ Failed to fetch cart:", err.message);
-    return emptyCart;
+    return { ...emptyCart, sessionId: sessionId ?? "" };
   }
 };
 
 export function useCart(sessionId: string | null, initialData?: Cart) {
   return useQuery<Cart, Error>({
-    queryKey: ["cart", sessionId],
+    queryKey: ["cart"],
     queryFn: () => fetchCart(sessionId),
-    initialData: initialData ?? emptyCart,
-    enabled: !!sessionId,
+    initialData: initialData ?? { ...emptyCart, sessionId: sessionId ?? "" },
+    enabled: true,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
-    placeholderData: (prev) => prev ?? emptyCart,
+    placeholderData: (prev) => prev ?? { ...emptyCart, sessionId: sessionId ?? "" },
     notifyOnChangeProps: ["data"],
   });
 }
@@ -117,8 +122,8 @@ export function useAddToCart() {
     AddToCartInput
   >({
     mutationFn: addToCart,
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["cart", variables.sessionId] });
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
       toast.success(data?.message || "Item added to cart successfully ✅");
     },
     onError: (err) => {
@@ -152,7 +157,7 @@ const updateCartQuantity = async (itemData: UpdateCartInput) =>
     body: JSON.stringify(itemData),
   });
 
-export function useUpdateCartQuantity(sessionId: string | null) {
+export function useUpdateCartQuantity(_sessionId: string | null) {
   const queryClient = useQueryClient();
 
   const { mutate, isPending, isError, error } = useMutation<
@@ -163,7 +168,7 @@ export function useUpdateCartQuantity(sessionId: string | null) {
     mutationFn: updateCartQuantity,
     onSuccess: () => {
       toast.success("Cart updated successfully 🛒");
-      queryClient.invalidateQueries({ queryKey: ["cart", sessionId] });
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (err) => toast.error(err.message || "Failed to update cart quantity."),
   });
@@ -192,7 +197,7 @@ const removeItemFromCart = async (itemData: RemoveCartInput) =>
     body: JSON.stringify(itemData),
   });
 
-export function useRemoveFromCart(sessionId: string | null) {
+export function useRemoveFromCart(_sessionId: string | null) {
   const queryClient = useQueryClient();
 
   const { mutate, isPending, isError, error } = useMutation<
@@ -203,7 +208,7 @@ export function useRemoveFromCart(sessionId: string | null) {
     mutationFn: removeItemFromCart,
     onSuccess: () => {
       toast.success("Item removed successfully ❌");
-      queryClient.invalidateQueries({ queryKey: ["cart", sessionId] });
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (err) => toast.error(err.message || "Failed to remove item."),
   });
@@ -226,7 +231,7 @@ const clearCart = async (sessionId: string | null) =>
     body: JSON.stringify({ sessionId, deleteAll: true }),
   });
 
-export function useClearCart(sessionId: string | null) {
+export function useClearCart(_sessionId: string | null) {
   const queryClient = useQueryClient();
 
   const { mutate, isPending, isError, error } = useMutation<
@@ -237,7 +242,7 @@ export function useClearCart(sessionId: string | null) {
     mutationFn: clearCart,
     onSuccess: () => {
       toast.success("Cart cleared successfully 🧹");
-      queryClient.invalidateQueries({ queryKey: ["cart", sessionId] });
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (err) => toast.error(err.message || "Failed to clear cart."),
   });

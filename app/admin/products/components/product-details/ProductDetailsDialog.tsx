@@ -61,7 +61,6 @@ export function ProductDetailsDialog({
   }, [details]);
 
   if (!details) return null;
-console.log("details",details);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

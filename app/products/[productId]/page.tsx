@@ -25,6 +25,7 @@ export default async function Page({ params }: PageProps) {
   if (!product) return notFound();
 
   const sessionId = await getSessionId();
+  console.log(sessionId, "sessionId");
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 py-10">

@@ -132,19 +132,6 @@ export default function ProductSummary({
           )}
         </div>
 
-        {/* <Button
-          onClick={addToCart}
-          disabled={!activeSize || (selectedStock ?? 0) <= 0}
-          className={cn(
-            "w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2",
-            !activeSize || (selectedStock ?? 0) <= 0
-              ? "bg-slate-700 pointer-events-none"
-              : "bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400"
-          )}
-        >
-          <ShoppingCart size={16} />
-          Add to cart
-        </Button> */}
 
         <Button
           onClick={handleAddToCart}

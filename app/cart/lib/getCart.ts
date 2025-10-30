@@ -7,7 +7,8 @@ export const getSessionId = async (): Promise<string | null> => {
 };
 
 export const getCart = async (): Promise<Cart> => {
-  const sessionId = await getSessionId();
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get("sessionId")?.value ?? null;
 
   // ✅ Unified empty cart shape
   const emptyCart: Cart = {
@@ -20,15 +21,19 @@ export const getCart = async (): Promise<Cart> => {
     couponCode: null,
   };
 
-  if (!sessionId) return emptyCart;
-
   try {
-    const res = await fetch(
-      `http://localhost:9000/api/cart?sessionId=${sessionId}`,
-      {
-        cache: "no-store",
-      }
-    );
+    const url = sessionId
+      ? `http://localhost:9000/api/cart?sessionId=${sessionId}`
+      : `http://localhost:9000/api/cart`;
+
+    const res = await fetch(url, {
+      cache: "no-store",
+      // forward current cookies to backend (for SSR)
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+      credentials: "include",
+    });
 
     if (!res.ok) {
       console.error("❌ Failed to fetch cart:", await res.text());
@@ -36,9 +41,13 @@ export const getCart = async (): Promise<Cart> => {
     }
 
     const data = await res.json();
+    const ensuredSessionId: string = data?.sessionId || sessionId || "";
+    const cart: Cart = data?.cart
+      ? { ...data.cart, sessionId: ensuredSessionId }
+      : { ...emptyCart, sessionId: ensuredSessionId };
 
-    // ✅ Always return a consistent cart structure
-    return data.cart ?? data ?? emptyCart;
+    // Note: On SSR, Set-Cookie from backend won't reach browser. We pass sessionId via props.
+    return cart;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error("❌ Cart fetch error:", err.message);
