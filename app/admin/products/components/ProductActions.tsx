@@ -11,14 +11,15 @@ import {
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { useDeleteResource } from "../hooks/useDeleteResource";
 import type { ProductAdmin } from "@/types/productsAdmin";
+import Link from "next/link";
 
 interface ProductActionsProps {
   row: ProductAdmin;
   onOpenDetails: () => void;
-  onEdit: () => void;
+  productId: string;
 }
 
-export function ProductActions({ row, onOpenDetails, onEdit }: ProductActionsProps) {
+export function ProductActions({ row, onOpenDetails, productId }: ProductActionsProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const { mutate: handleDelete, isPending } = useDeleteResource(
@@ -40,14 +41,16 @@ export function ProductActions({ row, onOpenDetails, onEdit }: ProductActionsPro
         </Button>
 
         {/* ✏️ Edit */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-slate-400 hover:text-yellow-400 hover:bg-slate-800/60"
-          onClick={onEdit}
-        >
-          <Edit className="w-4 h-4" />
-        </Button>
+        <Link href={`products/edit/${productId}`}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-slate-400 hover:text-yellow-400 hover:bg-slate-800/60"
+          // onClick={}
+          >
+            <Edit className="w-4 h-4" />
+          </Button>
+        </Link>
 
         {/* 🗑️ Delete */}
         <Button

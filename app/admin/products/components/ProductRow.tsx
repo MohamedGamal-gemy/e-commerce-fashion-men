@@ -82,7 +82,8 @@ export function ProductRow({ product }: ProductRowProps) {
           <ProductActions
             row={product}
             onOpenDetails={() => setOpen(true)}
-            onEdit={() => console.log("Edit product", product._id)}
+            productId={product._id}
+            // onEdit={() => }
           />
         </TableCell>
       </TableRow>

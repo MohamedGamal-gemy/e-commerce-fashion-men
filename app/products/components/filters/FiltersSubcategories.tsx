@@ -20,7 +20,7 @@ export function FiltersSubcategories({ subcategories = [], selected = [], onTogg
       </div>
 
       {subcategories.length ? (
-        <div className="space-y-2 max-h-80 overflow-y-auto">
+        <div className="space-y-2 max-h-80 px-2 ">
           {subcategories.map((subcategory) => (
             <FilterCheckbox
               key={subcategory._id}

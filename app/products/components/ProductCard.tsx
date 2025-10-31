@@ -47,9 +47,9 @@ export function ProductCard({ product }: ProductCardProps) {
           onMouseLeave={() => setHovered(false)}
           className="relative overflow-hidden py-0  backdrop-blur-xs border
            border-white/15 rounded-md shadow-md hover:shadow-sky-900/30 transition-all
-            duration-300 group-hover:-translate-y-1 group-hover:shadow-lg h-[24rem] "
+            duration-300 group-hover:-translate-y-1 group-hover:shadow-lg h-[21rem] "
         >
-          <div className="relative h-[21rem] w-full overflow-hidden bg-gradient-to-br to-gray-800
+          <div className="relative h-[16rem] w-full overflow-hidden bg-gradient-to-br to-gray-800
            via-black/60
            from-gray-800">
             <CardMedia

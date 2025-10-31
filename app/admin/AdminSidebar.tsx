@@ -14,6 +14,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Shirt,
+  Subscript,
+  UserPlus2,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -26,8 +28,10 @@ export default function AdminSidebar() {
   const links = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/products", label: "Products", icon: Shirt },
-    { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
     { href: "/admin/users", label: "Users", icon: Users },
+    { href: "/admin/subcategories", label: "Subcategories", icon: Subscript },
+    { href: "/admin/categories", label: "Categories", icon: UserPlus2 },
+    { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
     { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/admin/settings", label: "Settings", icon: Settings },
   ];

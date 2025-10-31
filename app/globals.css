@@ -31,3 +31,13 @@ body {
 button{
   cursor: pointer;
 }
+
+.input {
+  @apply w-full p-3 border border-gray-700 rounded-lg focus:outline-none focus:ring-1
+   focus:ring-green-300 transition text-slate-100 text-base placeholder-gray-400
+    bg-slate-900;
+}
+.button {
+  @apply bg-gradient-to-r to-cyan-500 px-3 text-white  py-2 rounded-sm
+   from-green-400 hover:bg-gradient-to-l duration-150;
+}
