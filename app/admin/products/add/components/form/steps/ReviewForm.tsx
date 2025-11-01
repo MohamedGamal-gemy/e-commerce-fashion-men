@@ -3,10 +3,10 @@ import { useFormContext } from "react-hook-form";
 import { getImageUrl } from "../../../utils/getImageUrl";
 
 const ReviewForm = ({
-  categories,
+  // categories,
   subcategories,
 }: {
-  categories: { _id: string; name: string }[] | undefined;
+  // categories: { _id: string; name: string }[] | undefined;
   subcategories: { _id: string; name: string }[] | undefined;
 }) => {
   const { watch } = useFormContext();
@@ -14,9 +14,9 @@ const ReviewForm = ({
   const selectedCategoryId = watch("category");
   const selectedSubcategoryId = watch("subcategory");
 
-  const selectedCategory = categories?.find(
-    (category) => category._id === selectedCategoryId
-  );
+  // const selectedCategory = categories?.find(
+  //   (category) => category._id === selectedCategoryId
+  // );
   const selectedSubcategory = subcategories?.find(
     (sub) => sub._id === selectedSubcategoryId
   );
@@ -39,10 +39,10 @@ const ReviewForm = ({
             <span className="font-medium">Description:</span>{" "}
             {watch("description")}
           </p>
-          <p>
+          {/* <p>
             <span className="font-medium">Category:</span>{" "}
             {selectedCategory?.name || "—"}
-          </p>
+          </p> */}
           <p>
             <span className="font-medium">Subcategory:</span>{" "}
             {selectedSubcategory?.name || "_"}

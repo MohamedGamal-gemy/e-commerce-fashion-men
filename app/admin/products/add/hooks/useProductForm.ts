@@ -57,7 +57,7 @@ const useProductForm = ({ page, product = null }: { page: "edit" | "add", produc
       title: data.title,
       description: data.description,
       price: data.price,
-      category: data.category,
+      // category: data.category,
       subcategory: data.subcategory,
       variants: data.variants.map((v: any) => {
         return {

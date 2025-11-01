@@ -18,10 +18,12 @@ export function useProductsQuery({
   // initialData,
   sort,
   search,
+  minPrice,
+  maxPrice,
   firstRender,
 }: ProductsQueryParams) {
   return useQuery<ProductsResponse>({
-    queryKey: ["products", selectedColors, selectedSubcategories, sort, search],
+    queryKey: ["products", selectedColors, selectedSubcategories, sort, search, minPrice, maxPrice],
     queryFn: async () => {
       const colorQuery = selectedColors.length
         ? `color=${arrayToString(selectedColors)}`
@@ -30,8 +32,10 @@ export function useProductsQuery({
         ? `subcategory=${arrayToString(selectedSubcategories)}`
         : "";
       const sortquery = sort.length ? `sort=${sort}` : "latest"
+      const minPriceQuery = minPrice > 20 ? `minPrice=${minPrice}` : 0
+      const maxPriceQuery = maxPrice > 20 ? `maxPrice=${maxPrice}` : 8000
       const searchquery = search.length ? `search=${search}` : ""
-      const queryParams = [colorQuery, subcategoryQuery, sortquery, searchquery]
+      const queryParams = [colorQuery, subcategoryQuery, sortquery, searchquery, minPriceQuery, maxPriceQuery]
         .filter(Boolean)
         .join("&");
 

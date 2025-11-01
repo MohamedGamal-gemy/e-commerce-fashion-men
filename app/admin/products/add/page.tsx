@@ -8,7 +8,7 @@ import ProductForm from "./components/form/ProductForm";
 // import { getCategories } from "./lib/getCategories";
 
 const AddProduct = async () => {
-    const categories = await getCategories();
+    // const categories = await getCategories();
     const subcategories = await getSubcategories();
 
     return (
@@ -24,7 +24,7 @@ const AddProduct = async () => {
                 <div className="fixed inset-0 bg-black/60 " />
             </div>
             <ProductForm
-                categories={categories}
+                // categories={categories}
                 subcategories={subcategories}
                 page={"add"}
             />

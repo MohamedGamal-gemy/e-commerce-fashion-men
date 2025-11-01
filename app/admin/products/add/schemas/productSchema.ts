@@ -7,7 +7,7 @@ export const productSchema = z.object({
 
   description: z.string().min(10, "Description must be at least 10 characters"),
 
-  category: z.string().min(1, "Category is required"),
+  // category: z.string().min(1, "Category is required"),
   subcategory: z.string().min(1, "Subcategory is required"),
   variants: z
     .array(

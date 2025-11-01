@@ -18,6 +18,7 @@ import FiltersSearch from "./filters/FiltersSearch";
 import { useSearchQueryHook } from "../hooks/useSearchQueryHook";
 import { Filter } from "lucide-react";
 import { FiltersMobileSheet } from "./filters/FiltersMobileSheet";
+import { useQueryState } from "nuqs";
 
 
 
@@ -40,11 +41,17 @@ export const ProductList: React.FC<ProductListProps> = ({ initialData, subcatego
   const { sort, setSort, search, setSearch } = useSearchQueryHook();
   const { selectedColors, toggleColor, clearColors } = useColorFilter();
   const { selectedSubcategories, toggleSubcategory, clearSubcategories } = useSubcategoryFilter();
+
+  const [minPrice] = useQueryState("minPrice")
+  const [maxPrice] = useQueryState("maxPrice")
+
   const { data, isLoading, error, isFetching } = useProductsQuery({
     selectedColors,
     selectedSubcategories,
     sort,
     search,
+    minPrice,
+    maxPrice,
     firstRender: firstRender.current,
   });
 

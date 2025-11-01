@@ -17,7 +17,8 @@ export const FiltersColors: React.FC<FiltersColorsProps> = ({
   onToggle,
 }) => {
   return (
-    <section aria-labelledby="colors-heading" className="space-y-3">
+    <section aria-labelledby="colors-heading" 
+     className="space-y-3 w-60 bg-slate-500/10 p-4 rounded-md border border-slate-500/40">
       <div className="flex items-center gap-2">
         <Palette className="w-5 h-5 text-pink-400" />
         <h4 id="colors-heading" className="text-sm font-semibold text-slate-200">

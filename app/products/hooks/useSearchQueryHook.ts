@@ -7,8 +7,5 @@ export const useSearchQueryHook = () => {
     const [search, setSearch] = useQueryState("search", {
         defaultValue: ""
     })
-    const [minPrice, setSearch] = useQueryState("search", {
-        defaultValue: ""
-    })
     return { sort, setSort, search, setSearch }
 }

@@ -115,7 +115,7 @@ export function FiltersPrice({
     return (
         <motion.div
             layout
-            className="space-y-4 bg-slate-500/10 p-4 rounded-md border border-slate-500/40"
+            className="space-y-4 w-60  bg-slate-500/10 p-4 rounded-md border border-slate-500/40"
         >
             <div className="flex items-center gap-2">
                 <Coins className="h-5 w-5 text-amber-400" />

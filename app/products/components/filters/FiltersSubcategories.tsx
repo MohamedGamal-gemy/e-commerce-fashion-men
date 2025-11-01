@@ -16,7 +16,8 @@ export const FiltersSubcategories: React.FC<FiltersSubcategoriesProps> = ({
   onToggle,
 }) => {
   return (
-    <section aria-labelledby="subcategories-heading" className="space-y-3 w-52">
+    <section aria-labelledby="subcategories-heading"
+     className="space-y-3 w-60 bg-slate-500/10 p-4 rounded-md border border-slate-500/40">
       <div className="flex items-center gap-2">
         <Layers className="w-5 h-5 text-emerald-400" />
         <h4 id="subcategories-heading" className="text-sm font-semibold text-slate-200">

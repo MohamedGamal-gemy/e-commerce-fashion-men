@@ -7,12 +7,12 @@ import { useFormContext } from "react-hook-form";
 import { ProductFormData } from "../../../../schemas/productSchema";
 
 const BasicInfo = ({
-  categories,
+  // categories,
   subcategories,
   selectedCat,
   selectedSub,
 }: {
-  categories: any[];
+  // categories: any[];
   subcategories: any[];
   selectedCat?: string;
   selectedSub?: string;
@@ -31,7 +31,7 @@ const BasicInfo = ({
       <FiledData name="description" type="textarea" error={errors.description} label="Description" />
 
       <div className="flex flex-col md:flex-row gap-4">
-        <CategorySelector options={categories} defaultValue={selectedCat} />
+        {/* <CategorySelector options={categories} defaultValue={selectedCat} /> */}
         <SubcategorySelector options={subcategories} defaultValue={selectedSub} />
       </div>
     </div>
