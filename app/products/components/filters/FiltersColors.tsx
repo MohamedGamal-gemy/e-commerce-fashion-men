@@ -1,7 +1,7 @@
 "use client";
 
+import { Palette } from "lucide-react";
 import { FilterCheckbox } from "./FilterCheckbox";
-import { PaletteIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Color } from "@/types/filter";
 
@@ -11,34 +11,40 @@ interface FiltersColorsProps {
   onToggle?: (value: string) => void;
 }
 
-export function FiltersColors({ colors = [], selected = [], onToggle }: FiltersColorsProps) {
+export const FiltersColors: React.FC<FiltersColorsProps> = ({
+  colors = [],
+  selected = [],
+  onToggle,
+}) => {
   return (
-    <div className="space-y-4 bg-slate-500/10 p-4 rounded-md border border-slate-500/40">
+    <section aria-labelledby="colors-heading" className="space-y-3">
       <div className="flex items-center gap-2">
-        <PaletteIcon className="h-5 w-5 text-purple-400" />
-        <h4 className="text-slate-300 text-sm font-semibold">Colors</h4>
-        <span className="text-slate-500 text-sm">({colors.length})</span>
+        <Palette className="w-5 h-5 text-pink-400" />
+        <h4 id="colors-heading" className="text-sm font-semibold text-slate-200">
+          Colors
+        </h4>
+        <span className="text-sm text-slate-400">({colors.length})</span>
       </div>
 
       {colors.length ? (
-        <ScrollArea className="h-80 rounded-md pr-2">
-          <div className="p-2 space-y-2">
-            {colors.map((color) => (
+        <ScrollArea className="h-72 rounded-md">
+          <div className="p-1 space-y-2">
+            {colors.map((c) => (
               <FilterCheckbox
-                key={color.colorValue}
-                id={`color-${color.colorValue}`}
-                label={color.colorName}
-                checked={selected.includes(color.colorName)}
-                onCheckedChange={() => onToggle?.(color.colorName)}
-                colorSwatch={color.colorValue}
+                key={c.colorValue}
+                id={`color-${c.colorValue}`}
+                label={c.colorName}
+                checked={selected.includes(c.colorName)}
+                onCheckedChange={() => onToggle?.(c.colorName)}
+                colorSwatch={c.colorValue}
               />
             ))}
           </div>
-          <ScrollBar className="bg-slate-400 w-1 hover:bg-slate-500 rounded-full" />
+          <ScrollBar className="w-2 rounded-full bg-slate-700/40" />
         </ScrollArea>
       ) : (
-        <p className="text-slate-500 text-sm text-center py-4">No colors available</p>
+        <p className="text-sm text-slate-400 text-center py-4">No colors</p>
       )}
-    </div>
+    </section>
   );
-}
+};

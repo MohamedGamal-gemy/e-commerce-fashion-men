@@ -45,19 +45,20 @@ export function ProductCard({ product }: ProductCardProps) {
         <Card
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
-          className="relative overflow-hidden py-0  backdrop-blur-xs border
+          className="relative overflow-hidden py-0  
+            backdrop-blur-xs border
            border-white/15 rounded-md shadow-md hover:shadow-sky-900/30 transition-all
-            duration-300 group-hover:-translate-y-1 group-hover:shadow-lg h-[21rem] "
+            duration-300 group-hover:-translate-y-1 group-hover:shadow-lg h-[22rem]  "
         >
-          <div className="relative h-[16rem] w-full overflow-hidden bg-gradient-to-br to-gray-800
+          <div className="relative h-full w-full   bg-gradient-to-br to-gray-800
            via-black/60
            from-gray-800">
             <CardMedia
               title={product.title}
               mainImage={mainImage}
-              // mainImage={ImgTest}
-              // secondImage={secondImage}
-              // hovered={hovered}
+            // mainImage={ImgTest}
+            // secondImage={secondImage}
+            // hovered={hovered}
             />
 
             <QuickViewButton onClick={handleQuickView} />
@@ -81,7 +82,7 @@ export function ProductCard({ product }: ProductCardProps) {
             ) : null} */}
           </div>
 
-          {/* <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-800/5 to-slate-950/5" /> */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black  via-gray-800/20" />
 
           <CardInfo
             title={product.title}

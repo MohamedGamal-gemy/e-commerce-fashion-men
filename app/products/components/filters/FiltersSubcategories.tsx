@@ -1,7 +1,7 @@
 "use client";
 
+import { Layers, LucideShirt, Shirt } from "lucide-react";
 import { FilterCheckbox } from "./FilterCheckbox";
-import { LayersIcon } from "lucide-react";
 import { Subcategory } from "@/types/filter";
 
 interface FiltersSubcategoriesProps {
@@ -10,31 +10,36 @@ interface FiltersSubcategoriesProps {
   onToggle?: (value: string) => void;
 }
 
-export function FiltersSubcategories({ subcategories = [], selected = [], onToggle }: FiltersSubcategoriesProps) {
+export const FiltersSubcategories: React.FC<FiltersSubcategoriesProps> = ({
+  subcategories = [],
+  selected = [],
+  onToggle,
+}) => {
   return (
-    <div className="space-y-4 bg-slate-500/10 p-4 rounded-md border border-slate-500/40">
+    <section aria-labelledby="subcategories-heading" className="space-y-3 w-52">
       <div className="flex items-center gap-2">
-        <LayersIcon className="h-5 w-5 text-blue-400" />
-        <h4 className="text-slate-300 text-sm font-semibold">Subcategories</h4>
-        <span className="text-slate-500 text-sm">({subcategories.length})</span>
+        <Layers className="w-5 h-5 text-emerald-400" />
+        <h4 id="subcategories-heading" className="text-sm font-semibold text-slate-200">
+          Subcategories
+        </h4>
+        <span className="text-sm text-slate-400">({subcategories.length})</span>
       </div>
-
       {subcategories.length ? (
-        <div className="space-y-2 max-h-80 px-2 ">
-          {subcategories.map((subcategory) => (
+        <div className="space-y-2  ">
+          {subcategories.map((sc) => (
             <FilterCheckbox
-              key={subcategory._id}
-              id={`subcategory-${subcategory._id}`}
-              label={subcategory.name}
-              checked={selected.includes(subcategory.name)}
-              onCheckedChange={() => onToggle?.(subcategory.name)}
-              icon={<LayersIcon className="h-4 w-4" />}
+              key={sc._id}
+              id={`subcategory-${sc._id}`}
+              label={sc.name}
+              checked={selected.includes(sc.name)}
+              onCheckedChange={() => onToggle?.(sc.name)}
+              // icon={<LucideShirt className="w-4 h-4" />}
             />
           ))}
         </div>
       ) : (
-        <p className="text-slate-500 text-sm text-center py-4">No subcategories available</p>
+        <p className="text-sm text-slate-400 text-center py-4">No subcategories</p>
       )}
-    </div>
+    </section>
   );
-}
+};

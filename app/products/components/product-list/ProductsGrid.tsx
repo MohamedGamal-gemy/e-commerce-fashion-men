@@ -11,7 +11,7 @@ interface ProductsGridProps {
 export const ProductsGrid: React.FC<ProductsGridProps> = ({ products }) => {
   if (!products || products.length === 0) return null;
   return (
-    <div className="grid gap-12 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 ">
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 ">
       {products.map((product) => (
         <div key={product._id}>
           <ProductCard product={product} />

@@ -1,12 +1,12 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { FiltersHeader } from "./FiltersHeader";
 import { FiltersSubcategories } from "./FiltersSubcategories";
 import { FiltersColors } from "./FiltersColors";
 import FiltersContainer from "./FiltersContainer";
-import { Color, Subcategory } from "@/types/filter";
-
+import type { Color, Subcategory } from "@/types/filter";
+import { FiltersPrice } from "./FiltersPrice";
 
 interface ProductsFiltersProps {
   subcategories?: Subcategory[];
@@ -31,33 +31,26 @@ function ProductsFiltersComponent({
     () => (selectedColors.length || 0) + (selectedSubcategories.length || 0),
     [selectedColors.length, selectedSubcategories.length]
   );
-
-  const handleClearAll = () => {
-    onClearAll?.();
-  };
+  
 
   return (
-
-      <FiltersContainer >
-        <FiltersHeader
-          selectedCount={totalSelected}
-          onClearAll={handleClearAll}
+    <FiltersContainer>
+      <FiltersHeader selectedCount={totalSelected} onClearAll={onClearAll ?? (() => { })} />
+      <div className="mt-4 space-y-6">
+        <FiltersSubcategories
+          subcategories={subcategories}
+          selected={selectedSubcategories}
+          onToggle={onToggleSubcategory}
+        />
+        <FiltersPrice
+          min={0}
+          max={5000}
+          onChange={(range) => console.log("Selected price range:", range)}
         />
 
-        <div className="space-y-6">
-          <FiltersSubcategories
-            subcategories={subcategories}
-            selected={selectedSubcategories}
-            onToggle={onToggleSubcategory}
-          />
-
-          <FiltersColors
-            colors={colors}
-            selected={selectedColors}
-            onToggle={onToggleColor}
-          />
-        </div>
-      </FiltersContainer>
+        <FiltersColors colors={colors} selected={selectedColors} onToggle={onToggleColor} />
+      </div>
+    </FiltersContainer>
   );
 }
 

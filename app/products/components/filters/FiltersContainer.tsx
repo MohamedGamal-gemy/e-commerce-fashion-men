@@ -4,21 +4,18 @@ import React from "react";
 
 interface FiltersContainerProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-export const FiltersContainer: React.FC<FiltersContainerProps> = ({ children }) => {
+export const FiltersContainer: React.FC<FiltersContainerProps> = ({ children, className = "" }) => {
   return (
     <div
-      // className="w-72 sticky top-6
-      //  space-y-6 p-6 bg-slate-800/40 backdrop-blur-sm rounded-xl border border-slate-700 shadow-xl"
-// className="bg-gradient-to-br to-slate-900/40 via-slate-800 from-slate-900/40 p-4 w-72"
-className="sticky top-6 bg-gradient-to-br to-gray-800 via-black/70 from-gray-800 w-72 p-4 space-y-6"
->
+      className={`w-72 bg-gradient-to-b from-slate-900/60 via-slate-900/50
+         to-slate-900/40 p-8 rounded-2xl border border-slate-800 shadow-lg ${className}`}
+    >
       {children}
     </div>
   );
 };
 
 export default FiltersContainer;
-
-
