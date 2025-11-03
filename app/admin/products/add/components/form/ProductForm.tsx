@@ -11,13 +11,13 @@ import ReviewForm from "./steps/ReviewForm";
 import StepButtons from "./ui/StepButtons";
 
 export default function ProductForm({
-  // categories,
+  categories,
   subcategories,
   page,
   product,
 }: {
-  // categories: Category;
-  subcategories: Subcategory;
+  categories: any;
+  subcategories: any;
   page: "edit" | "add";
   product?: any;
 }) {
@@ -56,15 +56,15 @@ export default function ProductForm({
                   <BasicInfo
                     selectedSub={product?.subcategory}
                     selectedCat={product?.category || "mens"}
-                    // categories={categories}
                     subcategories={subcategories}
+                    categories={categories}
                   />
                 )}
 
                 {currentStep === 1 && <VariantsForm />}
                 {currentStep === 2 && (
                   <ReviewForm
-                    // categories={categories}
+                    categories={categories}
                     subcategories={subcategories}
                   />
                 )}
