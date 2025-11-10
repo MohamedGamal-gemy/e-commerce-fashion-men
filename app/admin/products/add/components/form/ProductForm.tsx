@@ -2,7 +2,6 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { FormProvider } from "react-hook-form";
-import { Category, Subcategory } from "../../types/category-subcategory";
 import useProductForm from "../../hooks/useProductForm";
 import { StepsForm } from "./steps/steps";
 import BasicInfo from "./steps/Basic";
@@ -11,13 +10,11 @@ import ReviewForm from "./steps/ReviewForm";
 import StepButtons from "./ui/StepButtons";
 
 export default function ProductForm({
-  categories,
-  subcategories,
+  productTypes,
   page,
   product,
 }: {
-  categories: any;
-  subcategories: any;
+  productTypes: any;
   page: "edit" | "add";
   product?: any;
 }) {
@@ -32,7 +29,7 @@ export default function ProductForm({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
           className="bg-slate-700/10 relative borde border-sky-400 
-          max-w-4xl mx-auto rounded-2xl pb-4 w-full"
+          max-w-4xl mx-auto rounded-2xl pb-4 w-full p-6"
         >
           <StepsForm currentStep={currentStep} steps={steps} />
 
@@ -54,18 +51,14 @@ export default function ProductForm({
               >
                 {currentStep === 0 && (
                   <BasicInfo
-                    selectedSub={product?.subcategory}
-                    selectedCat={product?.category || "mens"}
-                    subcategories={subcategories}
-                    categories={categories}
+                    productTypes={productTypes}
                   />
                 )}
 
                 {currentStep === 1 && <VariantsForm />}
                 {currentStep === 2 && (
                   <ReviewForm
-                    categories={categories}
-                    subcategories={subcategories}
+                    productTypes={productTypes}
                   />
                 )}
               </motion.div>

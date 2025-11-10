@@ -5,9 +5,10 @@ import CheckoutSummary from "./components/CheckoutSummary";
 export default async function CheckoutPage() {
   const sessionId = await getSessionId();
   const cart = await getCart();
+// console.log();
 
   return (
-    <div className="container mx-auto py-10 px-4">
+    <div className="max-w-7xl mx-auto py-10 px-4">
       {/* Mobile view: Summary above form */}
       <div className="block lg:hidden mb-6">
         <CheckoutSummary items={cart?.items} />

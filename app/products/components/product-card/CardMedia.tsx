@@ -20,7 +20,7 @@ export function CardMedia({ title, mainImage }: CardMediaProps) {
       width={800}
       height={800}
       priority
-      className="object-cover h-full w-full object-top transition-all duration-700 group-hover:scale-105"
+      className="object-cover object-top   h-full w-full  transition-all duration-700 group-hover:scale-105"
     />
   );
 }

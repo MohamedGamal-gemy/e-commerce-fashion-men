@@ -1,51 +1,50 @@
 "use client";
 
-import { Palette } from "lucide-react";
-import { FilterCheckbox } from "./FilterCheckbox";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Color } from "@/types/filter";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
-interface FiltersColorsProps {
-  colors?: Color[];
-  selected?: string[];
-  onToggle?: (value: string) => void;
-}
-
-export const FiltersColors: React.FC<FiltersColorsProps> = ({
-  colors = [],
-  selected = [],
-  onToggle,
-}) => {
+export default function ColorFilter({
+  colors,
+  selectedColors,
+  toggleColor,
+  clearColors,
+}) {
   return (
-    <section aria-labelledby="colors-heading" 
-     className="space-y-3 w-60 bg-slate-500/10 p-4 rounded-md border border-slate-500/40">
-      <div className="flex items-center gap-2">
-        <Palette className="w-5 h-5 text-pink-400" />
-        <h4 id="colors-heading" className="text-sm font-semibold text-slate-200">
-          Colors
-        </h4>
-        <span className="text-sm text-slate-400">({colors.length})</span>
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <Label className="text-emerald-300 font-semibold">Colors</Label>
+        <button
+          onClick={clearColors}
+          className="text-xs text-slate-400 hover:text-red-400"
+        >
+          Clear
+        </button>
       </div>
 
-      {colors.length ? (
-        <ScrollArea className="h-72 rounded-md">
-          <div className="p-1 space-y-2">
-            {colors.map((c) => (
-              <FilterCheckbox
-                key={c.colorValue}
-                id={`color-${c.colorValue}`}
-                label={c.colorName}
-                checked={selected.includes(c.colorName)}
-                onCheckedChange={() => onToggle?.(c.colorName)}
-                colorSwatch={c.colorValue}
-              />
-            ))}
+      {colors?.map((color) => (
+        <label
+          key={color.value}
+          className="flex items-center justify-between bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 cursor-pointer hover:bg-slate-800 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={selectedColors.includes(color.name)}
+              onCheckedChange={() => toggleColor(color.name)}
+            />
+            <div className="flex items-center gap-2">
+              {/* ✅ دائرة اللون */}
+              <span
+                className="w-4 h-4 rounded-full border border-slate-600"
+                style={{ backgroundColor: color.value }}
+              ></span>
+              <span className="text-slate-100 text-sm">{color.name}</span>
+            </div>
           </div>
-          <ScrollBar className="w-2 rounded-full bg-slate-700/40" />
-        </ScrollArea>
-      ) : (
-        <p className="text-sm text-slate-400 text-center py-4">No colors</p>
-      )}
-    </section>
+
+          {/* ✅ عدد المنتجات */}
+          <span className="text-xs text-slate-400">{color.count ?? 0}</span>
+        </label>
+      ))}
+    </div>
   );
-};
+}

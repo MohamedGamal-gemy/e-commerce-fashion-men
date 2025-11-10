@@ -20,19 +20,20 @@ export default function SubcategoriesPage() {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery<Subcategory[]>({
-    queryKey: ["subcategories"],
+    queryKey: ["types"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:9000/api/subcategories");
+      const res = await axios.get("http://localhost:9000/api/product-types");
       return res.data;
     },
   });
+  // console.log("data", data);
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) =>
-      axios.delete(`http://localhost:9000/api/subcategories/${id}`),
+      axios.delete(`http://localhost:9000/api/product-types/${id}`),
     onSuccess: () => {
       toast.success("Deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["subcategories"] });
+      queryClient.invalidateQueries({ queryKey: ["types"] });
     },
     onError: () => toast.error("Failed to delete"),
   });
@@ -41,7 +42,9 @@ export default function SubcategoriesPage() {
     <div className="min-h-screen p-8 bg-slate-900 text-slate-100">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex items-center justify-between border-b border-slate-700 pb-4">
-          <h1 className="text-3xl font-semibold tracking-tight">Subcategories</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">
+            Subcategories
+          </h1>
 
           <Button
             onClick={() => {
@@ -55,7 +58,7 @@ export default function SubcategoriesPage() {
         </div>
 
         <SubcategoryTable
-          data={data || []}
+          data={data?.productTypes || []}
           isLoading={isLoading}
           onDelete={(id) => deleteMutation.mutate(id)}
           onEdit={(subcategory) => {
@@ -64,11 +67,7 @@ export default function SubcategoriesPage() {
           }}
         />
 
-        <SubcategoryDialog
-          open={open}
-          setOpen={setOpen}
-          editData={editData}
-        />
+        <SubcategoryDialog open={open} setOpen={setOpen} editData={editData} />
       </div>
     </div>
   );

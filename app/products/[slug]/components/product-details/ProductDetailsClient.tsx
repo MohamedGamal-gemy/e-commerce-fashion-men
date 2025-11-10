@@ -16,20 +16,22 @@ export default function ClientProductDetails({ product, sessionId }: Props) {
   const [activeVariantId, setActiveVariantId] = useState<string | null>(null);
   const [activeSize, setActiveSize] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
+// console.log(product);
 
   // initial set
   useEffect(() => {
-    if (product.variants?.length) {
-      setActiveVariantId(product.variants[0]._id);
+    if (product?.variants?.length) {
+      setActiveVariantId(product?.variants[0]._id);
       setActiveImageIndex(0);
-      setActiveSize(product.variants[0].sizes?.[0]?.size ?? null);
+      setActiveSize(product?.variants[0].sizes?.[0]?.size ?? null);
     }
   }, [product]);
 
   const activeVariant = useMemo(() => {
+  
     return (
-      product.variants.find((v) => v._id === activeVariantId) ??
-      product.variants[0]
+      product?.variants?.find((v) => v._id === activeVariantId) ??
+      product?.variants[0]
     );
   }, [product.variants, activeVariantId]);
 
@@ -83,7 +85,7 @@ export default function ClientProductDetails({ product, sessionId }: Props) {
           sessionId={sessionId}
         />
       </aside>
-      <ProductReviews productId={product._id} />
+      {/* <ProductReviews productId={product._id} /> */}
     </div>
   );
 }

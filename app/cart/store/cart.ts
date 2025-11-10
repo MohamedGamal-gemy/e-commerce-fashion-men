@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Cart } from "@/types/cart";
+import axios from "axios";
 
 /* -------------------------------------------------------------------------- */
 /*                               🔹 API Response Type                         */
@@ -33,10 +34,10 @@ async function apiRequest<T = unknown>(
 
     const data = (await res.json().catch(() => ({}))) as ApiResponse<T>;
 
-    if (!res.ok) {
-      const message = data?.message || data?.error || res.statusText;
-      throw new Error(message || "Request failed");
-    }
+    // if (!res.ok) {
+    //   const message = data?.message || data?.error || res.statusText;
+    //   throw new Error(message || "Request failed");
+    // }
 
     return data as T;
   } catch (err: unknown) {
@@ -68,7 +69,9 @@ const emptyCart: Cart = {
 const fetchCart = async (sessionId: string | null): Promise<Cart> => {
   try {
     const url = sessionId
-      ? `http://localhost:9000/api/cart?sessionId=${encodeURIComponent(sessionId)}`
+      ? `http://localhost:9000/api/cart?sessionId=${encodeURIComponent(
+          sessionId
+        )}`
       : `http://localhost:9000/api/cart`;
 
     const data = await apiRequest<ApiResponse<Cart>>(url);
@@ -76,7 +79,8 @@ const fetchCart = async (sessionId: string | null): Promise<Cart> => {
     const ensuredSessionId = data?.sessionId || sessionId || "";
     return { ...cartData, sessionId: ensuredSessionId };
   } catch (err: unknown) {
-    if (err instanceof Error) console.error("❌ Failed to fetch cart:", err.message);
+    if (err instanceof Error)
+      console.error("❌ Failed to fetch cart:", err.message);
     return { ...emptyCart, sessionId: sessionId ?? "" };
   }
 };
@@ -90,7 +94,8 @@ export function useCart(sessionId: string | null, initialData?: Cart) {
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
-    placeholderData: (prev) => prev ?? { ...emptyCart, sessionId: sessionId ?? "" },
+    placeholderData: (prev) =>
+      prev ?? { ...emptyCart, sessionId: sessionId ?? "" },
     notifyOnChangeProps: ["data"],
   });
 }
@@ -107,11 +112,21 @@ export interface AddToCartInput {
   sessionId?: string;
 }
 
-const addToCart = async (cartItem: AddToCartInput): Promise<ApiResponse> =>
-  apiRequest<ApiResponse>("http://localhost:9000/api/cart/add", {
-    method: "POST",
-    body: JSON.stringify(cartItem),
+const addToCart = async (cartItem: {
+  product: string;
+  variant: string;
+  size: string;
+  quantity: number;
+}): Promise<ApiResponse> => {
+  return axios.post("http://localhost:9000/api/cart/items", cartItem, {
+    headers: {
+      "Content-Type": "application/json",
+      // لو بتستخدم sessionId في localStorage:
+      // "x-session-id": localStorage.getItem("sessionId") || ""
+    },
+    withCredentials: true,
   });
+};
 
 export function useAddToCart() {
   const queryClient = useQueryClient();
@@ -152,8 +167,8 @@ interface UpdateCartInput {
 }
 
 const updateCartQuantity = async (itemData: UpdateCartInput) =>
-  apiRequest<ApiResponse>("http://localhost:9000/api/cart", {
-    method: "PUT",
+  apiRequest<ApiResponse>("http://localhost:9000/api/cart/items", {
+    method: "PATCH",
     body: JSON.stringify(itemData),
   });
 
@@ -170,7 +185,8 @@ export function useUpdateCartQuantity(_sessionId: string | null) {
       toast.success("Cart updated successfully 🛒");
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
-    onError: (err) => toast.error(err.message || "Failed to update cart quantity."),
+    onError: (err) =>
+      toast.error(err.message || "Failed to update cart quantity."),
   });
 
   return {
@@ -187,16 +203,16 @@ export function useUpdateCartQuantity(_sessionId: string | null) {
 
 interface RemoveCartInput {
   sessionId: string;
-  variantId: string;
+  variant: string;
   size: string;
+  color?: string;
 }
 
 const removeItemFromCart = async (itemData: RemoveCartInput) =>
-  apiRequest<ApiResponse>("http://localhost:9000/api/cart", {
+  apiRequest<ApiResponse>("http://localhost:9000/api/cart/items", {
     method: "DELETE",
     body: JSON.stringify(itemData),
   });
-
 export function useRemoveFromCart(_sessionId: string | null) {
   const queryClient = useQueryClient();
 

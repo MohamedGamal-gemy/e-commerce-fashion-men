@@ -35,19 +35,25 @@ const useCheckout = ({
     try {
       if (!sessionId && !userId) throw new Error("Cart session not found");
 
-      const res = await fetch("http://localhost:9000/api/checkout/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          userId,
-          billingDetails: data,
-        }),
-      });
+      const res = await fetch(
+        "http://localhost:9000/api/checkout/create-order",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId,
+            userId,
+            billingDetails: data,
+          }),
+          credentials: "include", // ✅ مهم جدًا عشان يرسل الكوكي (token)
+        }
+      );
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData?.error || `Failed to create order: ${res.status}`);
+        throw new Error(
+          errorData?.error || `Failed to create order: ${res.status}`
+        );
       }
 
       const result = await res.json();
@@ -65,8 +71,8 @@ const useCheckout = ({
         err instanceof Error
           ? err.message
           : typeof err === "object" && err !== null && "message" in err
-            ? String((err as { message?: string }).message)
-            : "Something went wrong during checkout";
+          ? String((err as { message?: string }).message)
+          : "Something went wrong during checkout";
       toast.error(message);
     }
   };

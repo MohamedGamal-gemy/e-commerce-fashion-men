@@ -29,16 +29,18 @@ interface OrderFilters {
   from: string;
   to: string;
   page: number;
-  // Optional extras if you re-enable:
-  // minTotal?: number;
-  // maxTotal?: number;
+  minTotal?: number | null;
+  maxTotal?: number | null;
 }
 
 // ✅ Fetch all admin orders
 async function getOrders(filters: OrderFilters): Promise<OrderResponse> {
-  const params = new URLSearchParams(
-    Object.entries(filters).filter(([, v]) => v !== "" && v !== "all")
-  ).toString();
+  const entries = Object.entries(filters).filter(([, v]) => {
+    if (v === undefined || v === null) return false;
+    if (typeof v === "string" && (v === "" || v === "all")) return false;
+    return true;
+  });
+  const params = new URLSearchParams(entries as [string, string][]).toString();
 
   const res = await fetch(
     `http://localhost:9000/api/checkout/admin/orders?${params}`,
@@ -57,6 +59,7 @@ async function updateOrderStatus(orderId: string, status: string): Promise<void>
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
+      credentials: "include",
     }
   );
   if (!res.ok) throw new Error("Failed to update status");
@@ -71,8 +74,9 @@ export function useAdminOrders() {
     status: parseAsString.withDefault("all"),
     from: parseAsString.withDefault(""),
     to: parseAsString.withDefault(""),
-    // minTotal: parseAsFloat.withDefault(0),
-    // maxTotal: parseAsFloat.withDefault(8000),
+    // Note: we keep undefined by default to avoid sending when not set
+    minTotal: { parse: (v: string | null) => (v == null || v === "" ? null : Number(v)) },
+    maxTotal: { parse: (v: string | null) => (v == null || v === "" ? null : Number(v)) },
     page: parseAsInteger.withDefault(1),
   });
 
@@ -81,16 +85,41 @@ export function useAdminOrders() {
   const ordersQuery = useQuery<OrderResponse>({
     queryKey: ["orders", debouncedFilters],
     queryFn: () => getOrders(debouncedFilters),
+    placeholderData: (prev) => prev, // keep previous data during refetches
+    staleTime: 5_000,
   });
 
   const updateStatus = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) =>
       updateOrderStatus(id, status),
+    onMutate: async ({ id, status }) => {
+      await queryClient.cancelQueries({ queryKey: ["orders"] });
+      const previous = queryClient.getQueriesData<OrderResponse>({ queryKey: ["orders"] });
+
+      // Optimistically update all cached pages that match the orders key
+      previous.forEach(([key, data]) => {
+        if (!data) return;
+        queryClient.setQueryData<OrderResponse>(key as any, {
+          ...data,
+          orders: data.orders.map((o) => (o._id === id ? { ...o, status } : o)),
+        });
+      });
+
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      // Rollback
+      context?.previous?.forEach(([key, data]) => {
+        if (data) queryClient.setQueryData(key as any, data);
+      });
+      toast.error("❌ Failed to update order status");
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
       toast.success("✅ Order status updated!");
     },
-    onError: () => toast.error("❌ Failed to update order status"),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
   });
 
   return { ...ordersQuery, updateStatus };

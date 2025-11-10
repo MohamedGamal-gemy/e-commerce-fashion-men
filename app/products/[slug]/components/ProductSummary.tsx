@@ -35,35 +35,58 @@ export default function ProductSummary({
 
   const { addToCart, isAdding } = useAddToCart();
 
+  // const handleAddToCart = async () => {
+  //   if (!activeVariant?._id) {
+  //     toast.error("Please select a variant before adding to cart.");
+  //     return;
+  //   }
+
+  //   if (!activeSize) {
+  //     toast.error("Please select a size before adding to cart.");
+  //     return;
+  //   }
+
+  //   const payload: AddToCartInput = {
+  //     productId: product._id,
+  //     variantId: activeVariant._id,
+  //     size: activeSize,
+  //     quantity: qty,
+  //     sessionId: sessionId ?? "", // fallback if null
+  //   };
+
+  //   addToCart(payload, {
+  //     onSuccess: () => {
+  //       toast.success("Added to cart successfully!");
+  //     },
+  //     onError: (err) => {
+  //       toast.error(err.message || "Failed to add item to cart.");
+  //     },
+  //   });
+  // };
+
   const handleAddToCart = async () => {
     if (!activeVariant?._id) {
       toast.error("Please select a variant before adding to cart.");
       return;
     }
-
     if (!activeSize) {
       toast.error("Please select a size before adding to cart.");
       return;
     }
 
-    const payload: AddToCartInput = {
-      productId: product._id,
-      variantId: activeVariant._id,
+    const payload = {
+      product: product._id,
+      variant: activeVariant._id,
       size: activeSize,
       quantity: qty,
-      sessionId: sessionId ?? "", // fallback if null
     };
 
     addToCart(payload, {
-      onSuccess: () => {
-        toast.success("Added to cart successfully!");
-      },
-      onError: (err) => {
-        toast.error(err.message || "Failed to add item to cart.");
-      },
+      onSuccess: () => toast.success("Added to cart successfully!"),
+      onError: (err) =>
+        toast.error(err.message || "Failed to add item to cart."),
     });
   };
-
   const lowStock = selectedStock > 0 && selectedStock <= 5;
 
   return (
@@ -131,7 +154,6 @@ export default function ProductSummary({
             <div className="text-sm text-amber-400 font-medium">Low stock</div>
           )}
         </div>
-
 
         <Button
           onClick={handleAddToCart}

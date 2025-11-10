@@ -1,46 +1,43 @@
 "use client";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+// import { useProductTypeFilter } from "@/hooks/useProductTypeFilter";
 
-import { Layers, LucideShirt, Shirt } from "lucide-react";
-import { FilterCheckbox } from "./FilterCheckbox";
-import { Subcategory } from "@/types/filter";
-
-interface FiltersSubcategoriesProps {
-  subcategories?: Subcategory[];
-  selected?: string[];
-  onToggle?: (value: string) => void;
-}
-
-export const FiltersSubcategories: React.FC<FiltersSubcategoriesProps> = ({
-  subcategories = [],
-  selected = [],
-  onToggle,
-}) => {
+export default function ProductTypeFilter({
+  productTypes,
+  selectedProductTypes,
+  toggleProductType,
+  clearProductTypes,
+}) {
   return (
-    <section aria-labelledby="subcategories-heading"
-     className="space-y-3 w-60 bg-slate-500/10 p-4 rounded-md border border-slate-500/40">
-      <div className="flex items-center gap-2">
-        <Layers className="w-5 h-5 text-emerald-400" />
-        <h4 id="subcategories-heading" className="text-sm font-semibold text-slate-200">
-          Subcategories
-        </h4>
-        <span className="text-sm text-slate-400">({subcategories.length})</span>
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <Label className="text-emerald-300 font-semibold">Product Types</Label>
+        <button
+          onClick={clearProductTypes}
+          className="text-xs text-slate-400 hover:text-red-400"
+        >
+          Clear
+        </button>
       </div>
-      {subcategories.length ? (
-        <div className="space-y-2  ">
-          {subcategories.map((sc) => (
-            <FilterCheckbox
-              key={sc._id}
-              id={`subcategory-${sc._id}`}
-              label={sc.name}
-              checked={selected.includes(sc.name)}
-              onCheckedChange={() => onToggle?.(sc.name)}
-              // icon={<LucideShirt className="w-4 h-4" />}
+
+      {productTypes.map((type) => (
+        <label
+          key={type._id}
+          className="flex items-center justify-between bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 cursor-pointer hover:bg-slate-800"
+        >
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={selectedProductTypes.includes(type.name)}
+              onCheckedChange={() => toggleProductType(type.name)}
             />
-          ))}
-        </div>
-      ) : (
-        <p className="text-sm text-slate-400 text-center py-4">No subcategories</p>
-      )}
-    </section>
+            <span className="text-slate-100 text-sm">{type.name}</span>
+          </div>
+          <span className="text-xs text-slate-400">
+            {type.dynamicProductCount ?? 0}
+          </span>
+        </label>
+      ))}
+    </div>
   );
-};
+}

@@ -5,21 +5,22 @@ import { debounce } from "../utils/debounce";
 import { useFilterArray, arrayToString } from "./useFilterArray";
 
 export function useColorFilter() {
-  const [selectedColorsString, setColorsString] = useQueryState("color", {
+  // نربط الـ state بالـ URL param
+  const [selectedColorsString, setColorsString] = useQueryState("colors", {
     defaultValue: "",
   });
 
-  // تحويل الـ string لـ array
+  // نحول الـ string إلى array
   const selectedColors = useFilterArray(selectedColorsString);
 
-  // ✅ Debounced function لتحديث الـ URL
-  // نحدد النوع بأن الدالة تأخذ string[]
+  // ✅ debounce function
   const debouncedSetColors = useRef(
     debounce((newColors: string[]) => {
       setColorsString(arrayToString(newColors));
     }, 300)
   ).current;
-  // دالة Toggle مع debounce
+
+  // ✅ toggleColor
   const toggleColor = useCallback(
     (value: string) => {
       const newColors = selectedColors.includes(value)
@@ -31,12 +32,12 @@ export function useColorFilter() {
     [selectedColors, debouncedSetColors]
   );
 
-  // دالة Clear All
+  // ✅ clear all colors
   const clearColors = useCallback(() => {
     debouncedSetColors([]);
   }, [debouncedSetColors]);
 
-  // دالة Set مباشرة (بدون debounce)
+  // ✅ set colors directly (بدون debounce)
   const setColors = useCallback(
     (colors: string[]) => {
       setColorsString(arrayToString(colors));

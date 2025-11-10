@@ -27,16 +27,16 @@ export default function SubcategoryDialog({ open, setOpen, editData }: Props) {
     mutationFn: async (values: { name: string }) => {
       if (isEditing) {
         return axios.put(
-          `http://localhost:9000/api/subcategories/${editData?._id}`,
+          `http://localhost:9000/api/product-types/${editData?._id}`,
           values
         );
       } else {
-        return axios.post("http://localhost:9000/api/subcategories", values);
+        return axios.post("http://localhost:9000/api/product-types", values);
       }
     },
     onSuccess: () => {
       toast.success(isEditing ? "Updated successfully" : "Added successfully");
-      queryClient.invalidateQueries({ queryKey: ["subcategories"] });
+      queryClient.invalidateQueries({ queryKey: ["types"] });
       setOpen(false);
     },
     onError: (err: any) => {

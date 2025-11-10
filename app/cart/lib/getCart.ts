@@ -10,7 +10,6 @@ export const getCart = async (): Promise<Cart> => {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value ?? null;
 
-  // ✅ Unified empty cart shape
   const emptyCart: Cart = {
     _id: "",
     sessionId: sessionId ?? "",
@@ -22,38 +21,51 @@ export const getCart = async (): Promise<Cart> => {
   };
 
   try {
-    const url = sessionId
-      ? `http://localhost:9000/api/cart?sessionId=${sessionId}`
-      : `http://localhost:9000/api/cart`;
+    const url = `http://localhost:9000/api/cart`;
 
     const res = await fetch(url, {
       cache: "no-store",
-      // forward current cookies to backend (for SSR)
       headers: {
         Cookie: cookieStore.toString(),
+        "Content-Type": "application/json",
       },
       credentials: "include",
     });
 
+    // ✅ لو السيرفر رجّع خطأ (404 / 500 / إلخ)
     if (!res.ok) {
-      console.error("❌ Failed to fetch cart:", await res.text());
-      return emptyCart;
+      const errorText = await res.text().catch(() => "No response body");
+      console.error("🚨 [Cart Fetch Error]");
+      console.error("URL:", url);
+      console.error("Status:", res.status);
+      console.error("Status Text:", res.statusText);
+      console.error("Response Body:", errorText);
+      console.error("----------------------------");
+
+      return {
+        ...emptyCart,
+        error: `Failed to fetch cart: ${res.status} ${res.statusText}`,
+      } as Cart;
     }
 
+    // ✅ لو كل شيء تمام
     const data = await res.json();
     const ensuredSessionId: string = data?.sessionId || sessionId || "";
+
     const cart: Cart = data?.cart
       ? { ...data.cart, sessionId: ensuredSessionId }
       : { ...emptyCart, sessionId: ensuredSessionId };
 
-    // Note: On SSR, Set-Cookie from backend won't reach browser. We pass sessionId via props.
     return cart;
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error("❌ Cart fetch error:", err.message);
-    } else {
-      console.error("❌ Unknown cart fetch error:", err);
-    }
-    return emptyCart;
+  } catch (err: any) {
+    console.error("💥 [Unhandled Cart Fetch Error]");
+    console.error("Message:", err.message);
+    console.error("Stack:", err.stack);
+    console.error("----------------------------");
+
+    return {
+      ...emptyCart,
+      error: `Unhandled error: ${err.message}`,
+    } as Cart;
   }
 };

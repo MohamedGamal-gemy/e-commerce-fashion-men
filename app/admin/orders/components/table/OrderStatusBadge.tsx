@@ -7,6 +7,7 @@ export function OrderStatusBadge({ status }: { status: string }) {
     {
       paid: "bg-green-600/80 text-white",
       pending: "bg-yellow-500/80 text-black",
+      processing: "bg-indigo-600/80 text-white",
       shipped: "bg-blue-600/80 text-white",
       delivered: "bg-emerald-500/80 text-white",
       cancelled: "bg-red-600/80 text-white",

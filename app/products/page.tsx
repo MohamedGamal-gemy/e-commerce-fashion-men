@@ -1,38 +1,21 @@
 export const dynamic = "force-dynamic";
 
-import { productsRepository } from "./repositories/productsRepository";
-import { ErrorDisplay } from "./components/ErrorDisplay";
-import { ProductsSection, Pagination } from "./components/products-page";
+import ProductsPageClient from "../../src/features/products/ProductsPageClient";
+import { productsRepository } from "../../src/features/products/api/repository";
 
 export default async function ProductsPage() {
-  try {
-    const [subcategories, colors, data] = await Promise.all([
-      productsRepository.getSubcategories(),
-      productsRepository.getColors(),
-      productsRepository.getAll(),
-    ]);
+  const [initialProductTypes, initialColors] = await Promise.all([
+    productsRepository.getProductTypes(),
+    productsRepository.getColors(),
+  ]);
 
-    return (
-      <main className="min-h-screen bg-gradient-to-br from-slate-950/90 via-slate-800/90 /50 relative
-         to-slate-950/90">
-        {/* <main className="min-h-screen bg-gradient-to-tl to-gray-800
-           via-black/80
-           from-gray-800 py-8  "> */}
-           <div className="absolute w-20 h-40 bg-sky-400 blur-3xl"></div>
-           {/* <div className="absolute w-40 h-40 right-4 bg-sky-400/90 blur-[7rem]"></div> */}
-        <ProductsSection initialData={data} colors={colors} subcategories={subcategories} />
-        <Pagination totalPages={data?.pagination?.totalPages} />
-      </main>
-    );
-  } catch (error) {
-    console.error("Products page error:", error);
-
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-slate-950">
-        <ErrorDisplay message="Failed to load products page. Please try again later." />
-      </main>
-    );
-  }
+  return (
+    <main
+      // className="min-h-screen bg-gradient-to-br from-slate-950/90 via-slate-800/90 /50 relative to-slate-950/90"
+      className="min-h-screen bg-slate-950"
+    >
+      {/* <div className="absolute w-20 h-40 bg-sky-400 blur-3xl"></div> */}
+        <ProductsPageClient initialProductTypes={initialProductTypes} initialColors={initialColors} />
+    </main>
+  );
 }
-
-

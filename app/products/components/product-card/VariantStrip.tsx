@@ -29,15 +29,13 @@ export function VariantStrip({
         <button
           key={v._id}
           onClick={(e) => onSelect(i, e)}
-          className={`relative w-7 h-7 rounded-full overflow-hidden transition-all duration-300 ${
-            activeIndex === i
-              ? "ring-1 ring-sky-500  shadow-sm"
-              : "  "
+          className={`relative w-9 h-9 rounded overflow-hidden transition-all duration-300 ${
+            activeIndex === i ? "ring-1 ring-sky-500  shadow-sm" : "  "
           }`}
         >
           <Image
-            src={v.mainImage || "/placeholder.png"}
-            alt={v.color}
+            src={v.previewImage || "/placeholder.png"}
+            alt={v.color.name}
             fill
             className="object-cover object-top"
           />

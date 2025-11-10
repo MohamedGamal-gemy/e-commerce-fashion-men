@@ -3,53 +3,53 @@ import { useCallback, useRef } from "react";
 import { debounce } from "../utils/debounce";
 import { useFilterArray, arrayToString } from "./useFilterArray";
 
-export function useSubcategoryFilter() {
-  const [selectedSubcategoriesString, setSubcategoriesString] = useQueryState(
-    "subcategory",
+export function useProductTypeFilter() {
+  // نربط الحالة مع URL query param
+  const [selectedProductTypesString, setProductTypesString] = useQueryState(
+    "product-types", // اسم البراميتر في الـ URL
     { defaultValue: "" }
   );
 
-  // تحويل الـ string لـ array
-  const selectedSubcategories = useFilterArray(selectedSubcategoriesString);
+  // نحول الـ string (من URL) إلى array
+  const selectedProductTypes = useFilterArray(selectedProductTypesString);
 
-  // Debounced function لتحديث الـ URL
-const debouncedSetSubcategories = useRef(
-  debounce((newSubcategories: string[]) => {
-    setSubcategoriesString(arrayToString(newSubcategories));
-  }, 300)
-).current;
-  // دالة Toggle مع debounce
-  const toggleSubcategory = useCallback(
+  // Debounced function لتحديث الـ URL بعد 300ms من آخر تغيير
+  const debouncedSetProductTypes = useRef(
+    debounce((newProductTypes: string[]) => {
+      setProductTypesString(arrayToString(newProductTypes));
+    }, 300)
+  ).current;
+
+  // ✅ Toggle function
+  const toggleProductType = useCallback(
     (value: string) => {
-      const newSubcategories = selectedSubcategories.includes(value)
-        ? selectedSubcategories.filter((v) => v !== value)
-        : [...selectedSubcategories, value];
+      const newProductTypes = selectedProductTypes.includes(value)
+        ? selectedProductTypes.filter((v) => v !== value)
+        : [...selectedProductTypes, value];
 
-      debouncedSetSubcategories(newSubcategories);
+      debouncedSetProductTypes(newProductTypes);
     },
-    [selectedSubcategories, debouncedSetSubcategories]
+    [selectedProductTypes, debouncedSetProductTypes]
   );
 
-  // دالة Clear All
-  const clearSubcategories = useCallback(() => {
-    debouncedSetSubcategories([]);
-  }, [debouncedSetSubcategories]);
+  // ✅ Clear all selections
+  const clearProductTypes = useCallback(() => {
+    debouncedSetProductTypes([]);
+  }, [debouncedSetProductTypes]);
 
-  // دالة Set مباشرة (بدون debounce)
-  const setSubcategories = useCallback(
-    (subcategories: string[]) => {
-      setSubcategoriesString(arrayToString(subcategories));
+  // ✅ Set مباشرة بدون debounce (لو حابب تتحكم من بره)
+  const setProductTypes = useCallback(
+    (productTypes: string[]) => {
+      setProductTypesString(arrayToString(productTypes));
     },
-    [setSubcategoriesString]
+    [setProductTypesString]
   );
 
   return {
-    selectedSubcategories,
-    selectedSubcategoriesString,
-    toggleSubcategory,
-    clearSubcategories,
-    setSubcategories,
+    selectedProductTypes,
+    selectedProductTypesString,
+    toggleProductType,
+    clearProductTypes,
+    setProductTypes,
   };
 }
-
-  

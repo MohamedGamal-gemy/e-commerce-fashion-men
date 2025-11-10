@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button";
 
 export function OrderActionsMenu({
   onChange,
+  disabled,
 }: {
   orderId?: string;
   onChange: (status: string) => void;
+  disabled?: boolean;
 }) {
   const statuses = ["pending", "paid", "shipped", "delivered", "cancelled"];
 
@@ -21,7 +23,8 @@ export function OrderActionsMenu({
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="border-slate-700 text-slate-200 hover:bg-slate-800/80"
+          disabled={disabled}
+          className="border-slate-700 text-slate-200 hover:bg-slate-800/80 disabled:opacity-50"
         >
           Change Status
         </Button>

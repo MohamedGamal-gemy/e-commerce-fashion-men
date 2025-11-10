@@ -34,7 +34,7 @@ const CartPageClient = ({ cart, sessionId }: Props) => {
     if (newQuantity <= 0) return;
     updateQuantity({
       sessionId,
-      variantId,
+      variant: variantId, // ✅ بدل variantId
       size,
       quantity: newQuantity,
     });
@@ -43,15 +43,15 @@ const CartPageClient = ({ cart, sessionId }: Props) => {
   const handleDelete = ({
     variantId,
     size,
+    color,
   }: {
     variantId: string;
     size: string;
+    color?: string;
   }) => {
     removeFromCart(
-      { sessionId, variantId, size },
-      {
-        onSuccess: () => toast.success("Item removed successfully ✅"),
-      }
+      { sessionId, variant: variantId, size, color },
+      { onSuccess: () => toast.success("Item removed successfully ✅") }
     );
   };
 
@@ -65,6 +65,7 @@ const CartPageClient = ({ cart, sessionId }: Props) => {
   // ✅ البيانات الحقيقية بتيجي في data.cart
   const currentCart = (data ?? cart) as Cart;
   const items = currentCart.items ?? [];
+  // console.log(items);
 
   if (items.length === 0)
     return (

@@ -29,7 +29,8 @@ const CartItem = ({
   setIsPending,
 }: CartItemProps) => {
   const variantColor = item.variantId?.color?.name ?? "N/A";
-  const variantImage = item.variantId?.images?.[0]?.url ?? "/placeholder.png";
+  const variantImage = item.variant?.image?.url ?? "/placeholder.png";
+  console.log(item);
 
   return (
     <div
@@ -42,20 +43,18 @@ const CartItem = ({
           <Image
             className="w-24 h-24 object-cover rounded-lg border border-white/10 object-top"
             src={variantImage}
-            alt={item.productId.title}
+            alt={item.product?.title}
             height={100}
             width={100}
           />
 
           <div className="space-y-1.5">
-            <div className="text-base font-semibold">
-              {item.productId.title}
-            </div>
+            <div className="text-base font-semibold">{item.product?.title}</div>
             <div className="text-sm text-sky-400 font-bold">
-              LE {item.productId.price}
+              LE {item.price}
             </div>
             <div className="text-sm text-gray-400">
-              {item.size} · {variantColor}
+              {item.size} · {item.color}
             </div>
           </div>
         </div>
@@ -68,7 +67,7 @@ const CartItem = ({
             onClick={() => {
               setIsPending(i);
               handleQuantityChange(
-                item.variantId._id,
+                item.variant._id,
                 item.size,
                 item.quantity - 1
               );
@@ -96,7 +95,7 @@ const CartItem = ({
             onClick={() => {
               setIsPending(i);
               handleQuantityChange(
-                item.variantId._id,
+                item.variant._id,
                 item.size,
                 item.quantity + 1
               );
@@ -110,7 +109,11 @@ const CartItem = ({
         <button
           onClick={() => {
             setIsPending(i);
-            handleDelete({ variantId: item.variantId._id, size: item.size });
+            handleDelete({
+              variantId: item.variant._id,
+              size: item.size,
+              color: item.color,
+            });
           }}
           disabled={isRemoving}
           className="text-red-500 hover:text-red-400 transition-colors duration-150"

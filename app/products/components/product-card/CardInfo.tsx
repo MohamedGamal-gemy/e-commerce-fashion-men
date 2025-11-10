@@ -5,27 +5,27 @@ import { VariantStrip } from "./VariantStrip";
 
 interface CardInfoProps {
   title: string;
-  subcategory: string;
+  productTypeName: string;
   price: number;
 }
 
 export function CardInfo({
   title,
-  subcategory,
+  productTypeName,
   price,
   activeVariant,
   variants,
 }: CardInfoProps) {
   return (
-    // <div className="p-4 pb-8 -mt-8 bg-gradient-to-br to-gray-700/40 via-gray-800/40 from-gray-700/40 ">
-    <div className="p-4 pb-8  absolute -bottom-4 bg-amber- w-full  ">
+    // <div className="p-4 pb-8  absolute -bottom-4 bg-amber- w-full   ">
+    <div className="p-4 pb-8 -mt-9 bg-gradient-to-br to-gray-700/40 via-gray-800/40 from-gray-700/40 ">
       <h3
         className="text-blu-400 font-semibold text-[15px] truncate tracking-tight
        group-hover:text-sky-300 transition"
       >
         {title}
       </h3>
-      <p className="text-slate-300 text-xs my-1">{subcategory}</p>
+      <p className="text-slate-300 text-xs my-1">{productTypeName}</p>
 
       <div className="flex items-center justify-between mt-1">
         <span
@@ -44,7 +44,7 @@ export function CardInfo({
                 e.stopPropagation();
                 // setActiveVariant(i);
               }}
-            // onHoverStart={() => setHovered(false)}
+              // onHoverStart={() => setHovered(false)}
             />
           ) : null}
         </div>

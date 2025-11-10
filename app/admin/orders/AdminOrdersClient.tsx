@@ -7,9 +7,11 @@ import OrdersPagination from "./components/OrdersPagination";
 import TableHeaderForOrders from "./components/table/table-header-for-orders";
 import TableBodyForOrders from "./components/table/table-body-for-orders";
 import { Order } from "@/types/orders.types";
+import OrdersFilters from "./components/OrdersFilters";
 
 export default function AdminOrdersClient() {
   const { data, isLoading, isError, updateStatus } = useAdminOrders();
+  console.log(data);
 
   if (isLoading)
     return (
@@ -27,7 +29,10 @@ export default function AdminOrdersClient() {
         Orders Dashboard
       </h1>
 
-      <div className="space-y-8">{/* <OrdersAnalytics /> */}</div>
+      <div className="space-y-8">
+        <OrdersFilters />
+        {/* <OrdersAnalytics /> */}
+      </div>
 
       {/* 📋 Orders Table */}
       <motion.div
@@ -42,15 +47,19 @@ export default function AdminOrdersClient() {
           <TableHeaderForOrders />
           {data && (
             <>
-              <TableBody>
-                {data.orders.map((order: Order) => (
-                  <TableBodyForOrders
-                    key={order._id}
-                    order={order}
-                    updateStatus={updateStatus}
-                  />
-                ))}
-              </TableBody>
+              {data.orders.length === 0 ? (
+                <div className="p-8 text-center text-slate-400">No orders found.</div>
+              ) : (
+                <TableBody>
+                  {data.orders.map((order: Order) => (
+                    <TableBodyForOrders
+                      key={order._id}
+                      order={order}
+                      updateStatus={updateStatus}
+                    />
+                  ))}
+                </TableBody>
+              )}
 
               <OrdersPagination totalPages={data.totalPages} />
             </>

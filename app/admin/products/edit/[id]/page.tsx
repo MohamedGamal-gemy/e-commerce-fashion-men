@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getCategories } from "../../add/lib/getCategories";
 import ProductForm from "../../add/components/form/ProductForm";
-import { getSubcategories } from "../../add/lib/getSubcategories";
+import { getSubcategories } from "../../add/lib/getProductTypes";
 import { fetchProduct } from "@/app/products/[productId]/services/productService";
 
 

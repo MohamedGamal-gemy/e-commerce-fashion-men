@@ -4,6 +4,7 @@ import { getCart } from "./lib/getCart";
 const CartPage = async () => {
   const cart = await getCart();
   const sessionId = cart.sessionId || null;
+console.log(cart);
 
   return (
     <div className="container mx-auto mt-10">

@@ -24,8 +24,8 @@ export function ProductCard({ product }: ProductCardProps) {
   const [activeVariant, setActiveVariant] = useState(0);
 
   const activeVariantData = product.variants?.[activeVariant];
-  const mainImage = activeVariantData?.mainImage || "/placeholder.png";
-  const secondImage = activeVariantData?.secondImage || mainImage;
+  // const mainImage = activeVariantData?.mainImage || "/placeholder.png";
+  // const secondImage = activeVariantData?.secondImage || mainImage;
 
   const handleQuickView = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // prevent navigation
@@ -48,17 +48,19 @@ export function ProductCard({ product }: ProductCardProps) {
           className="relative overflow-hidden py-0  
             backdrop-blur-xs border
            border-white/15 rounded-md shadow-md hover:shadow-sky-900/30 transition-all
-            duration-300 group-hover:-translate-y-1 group-hover:shadow-lg h-[22rem]  "
+            duration-300 group-hover:-translate-y-1 group-hover:shadow-lg h-[27rem]  "
         >
-          <div className="relative h-full w-full   bg-gradient-to-br to-gray-800
+          <div
+            className="relative h-[77%] w-full   bg-gradient-to-br to-gray-800
            via-black/60
-           from-gray-800">
+           from-gray-800"
+          >
             <CardMedia
               title={product.title}
-              mainImage={mainImage}
-            // mainImage={ImgTest}
-            // secondImage={secondImage}
-            // hovered={hovered}
+              mainImage={product?.colorPreviews[0]?.previewImage}
+              // mainImage={ImgTest}
+              // secondImage={secondImage}
+              // hovered={hovered}
             />
 
             <QuickViewButton onClick={handleQuickView} />
@@ -82,13 +84,14 @@ export function ProductCard({ product }: ProductCardProps) {
             ) : null} */}
           </div>
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black  via-gray-800/20" />
+          {/* <div className="absolute inset-0 bg-gradient-to-t from-black  via-gray-800/20" /> */}
 
           <CardInfo
             title={product.title}
-            subcategory={product.subcategory || "General"}
+            productTypeName={product?.productTypeName || ""}
             price={product.price}
-            variants={product.variants}
+            // variants={product.variants}
+            variants={product?.colorPreviews}
             activeVariant={activeVariant}
           />
         </Card>

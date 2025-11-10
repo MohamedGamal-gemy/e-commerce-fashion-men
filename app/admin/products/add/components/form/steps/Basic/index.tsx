@@ -1,20 +1,11 @@
 import FiledData from "./FiledData";
 import CategorySelector from "./CategorySelector";
-import SubcategorySelector from "./SubcategorySelector";
+import SubcategorySelector from "./ProductTypesSelector";
 import { useFormContext } from "react-hook-form";
 import { ProductFormData } from "../../../../schemas/productSchema";
+import ProductTypesSelector from "./ProductTypesSelector";
 
-const BasicInfo = ({
-  categories,
-  subcategories,
-  selectedCat,
-  selectedSub,
-}: {
-  categories: any[];
-  subcategories: any[];
-  selectedCat?: string;
-  selectedSub?: string;
-}) => {
+const BasicInfo = ({ productTypes }: { productTypes: any }) => {
   const {
     formState: { errors },
   } = useFormContext<ProductFormData>();
@@ -37,15 +28,11 @@ const BasicInfo = ({
         error={errors.description}
         label="Description"
       />
-{/*  */}
+      {/*  */}
 
       {/*  */}
       <div className="flex flex-col md:flex-row gap-4">
-        <CategorySelector options={categories} defaultValue={selectedCat} /> 
-        <SubcategorySelector
-          options={subcategories}
-          defaultValue={selectedSub}
-        />
+        <ProductTypesSelector productTypes={productTypes} />
       </div>
     </div>
   );

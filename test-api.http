@@ -1,0 +1,43 @@
+### Create Product Type
+# POST http://localhost:9000/api/product-types
+# Content-Type: application/json
+
+# {
+#   "name": "T-Shirts",
+#   "description": "All types of t-shirts for men",
+#   "image": {
+#     "url": "https://example.com/images/tshirt.jpg",
+#     "publicId": "product-types/tshirt",
+#     "alt": "T-Shirt"
+#   },
+#   "order": 1
+# }
+
+### Get All Product Types
+# GET  http://localhost:9000/api/product-types
+Get http://localhost:9000/api/products?color=white
+
+# PATCH http://localhost:9000/api/products/690ba546d8831f48810207eb
+# Content-Type: application/json
+
+# {
+#   "productType": "690bb7cfd8831f488102089a"
+# }
+
+# DELETE  http://localhost:9000/api/products/690b9b5c1caa026336f86e75
+
+### Get Single Product Type
+# GET http://localhost:9000/api/product-types/{{PRODUCT_TYPE_ID}}
+
+### Update Product Type
+# PUT http://localhost:9000/api/product-types/{{PRODUCT_TYPE_ID}}
+# Content-Type: application/json
+
+# {
+#   "name": "Updated T-Shirts",
+#   "description": "Updated description for t-shirts",
+#   "order": 2
+# }
+
+# ### Delete Product Type
+# DELETE http://localhost:9000/api/product-types/{{PRODUCT_TYPE_ID}}

@@ -50,7 +50,7 @@ export default function CheckoutSummary({ items }: CheckoutSummaryProps) {
           ) : (
             items.map((item, index) => {
               const imageUrl =
-                item.variantId?.images?.[0]?.url ||
+                item.variant?.image?.url ||
                 "https://placehold.co/100x100?text=No+Image";
 
               return (
@@ -61,14 +61,14 @@ export default function CheckoutSummary({ items }: CheckoutSummaryProps) {
                   <div className="flex items-center gap-3">
                     <Image
                       src={imageUrl}
-                      alt={item.productId.title}
+                      alt={item.product.title}
                       width={48}
                       height={48}
                       className="rounded-md object-cover border border-slate-700"
                     />
                     <div>
                       <p className="font-medium text-white">
-                        {item.productId.title}
+                        {item.product.title}
                       </p>
                       <p className="text-slate-400">
                         {item.quantity} × {item.price} EGP
